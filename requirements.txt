@@ -1,0 +1,26 @@
+# Requirements minimal pour projet académique
+
+# Django
+Django==5.1.4
+
+# Base de données MySQL (PyMySQL - pure Python, pas de compilation)
+PyMySQL==1.1.1
+
+# Configuration
+python-dotenv==1.0.1
+
+# Images
+Pillow==10.4.0
+
+# Templates avec Tailwind CSS
+django-tailwind==3.8.0
+django-browser-reload==1.12.1
+
+# API REST
+djangorestframework==3.15.2
+
+# Paiements Mobile Money
+requests==2.32.3
+
+# Utilitaires
+python-dateutil==2.9.0.post0
