@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Connexion - Mboa Association{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="card" style="max-width: 28rem; width: 100%;">
+    <!-- En-tête -->
+    <div class="card-header">
+      <div class="avatar avatar-lg" style="background: rgb(var(--primary-light)); margin: 0 auto var(--spacing-md);">
+        <i class="fa-solid fa-user  icon-primary" style="font-size: 2px;"></i>
+      </div>
+      <h1 class="heading-2" style="margin-bottom: var(--spacing-xs);">Connexion</h1>
+      <p class="text-muted">Accédez à votre compte</p>
+    </div>
+
+    <div class="card-body">
+      <!-- Messages -->
+      {% if messages %}
+      {% for message in messages %}
+      <div
+        class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+        <i class="fa-solid fa-check alert-icon icon-success" style="font-size: 2px;"></i>
+        <div class="alert-content">{{ message }}</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- Formulaire -->
+      <form method="post" id="loginForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}" class="form-label">
+            {{ form.username.label }}
+          </label>
+          {{ form.username }}
+          {% if form.username.errors %}
+          {% for error in form.username.errors %}
+          <span class="form-error">
+            <i class="fa-solid fa-circle-xmark  icon-error"></i>
+            {{ error }}
+          </span>
+          {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.password.id_for_label }}" class="form-label">
+            {{ form.password.label }}
+          </label>
+          {{ form.password }}
+          {% if form.password.errors %}
+          {% for error in form.password.errors %}
+          <span class="form-error">
+            <i class="fa-solid fa-circle-xmark  icon-error"></i>
+            {{ error }}
+          </span>
+          {% endfor %}
+          {% endif %}
+        </div>
+
+        <!-- Erreurs non-field -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">
+          <i class="fa-solid fa-xmark alert-icon icon-error" style="font-size: 2px;"></i>
+          <div class="alert-content">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary btn-full">
+          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+          </svg>
+          Se connecter
+        </button>
+      </form>
+
+      <!-- Liens supplémentaires -->
+      <div style="margin-top: var(--spacing-lg);">
+        <div style="text-align: center; margin-bottom: var(--spacing-md);">
+          <a href="#" style="color: rgb(var(--primary)); font-size: var(--font-size-sm); text-decoration: none;">
+            Mot de passe oublié ?
+          </a>
+        </div>
+
+        <div class="separator">
+          <span class="separator-text">ou</span>
+        </div>
+
+        <div style="text-align: center;">
+          <p class="text-sm" style="color: rgb(var(--muted-foreground));">
+            Vous n'avez pas de compte ?
+            <a href="{% url 'register' %}" style="color: rgb(var(--primary)); font-weight: 500; text-decoration: none;">
+              S'inscrire
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <p class="text-xs" style="text-align: center; color: rgb(var(--muted-foreground)); margin: 0;">
+        <i class="fa-solid fa-circle-info  icon-info" style="font-size: 2px;"></i>
+        Utilisez votre numéro de téléphone pour vous connecter
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/form-validation.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Auto-focus sur le premier champ
+  document.addEventListener('DOMContentLoaded', function () {
+    const firstInput = document.querySelector('input[type="tel"]');
+    if (firstInput) firstInput.focus();
+  });
+</script>
+{% endblock %}

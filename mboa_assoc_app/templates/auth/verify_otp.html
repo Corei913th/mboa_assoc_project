@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vérification OTP - Mboa Association{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="card" style="max-width: 32rem; width: 100%;">
+    <!-- En-tête -->
+    <div class="card-header">
+      <div class="avatar avatar-lg" style="background: rgb(var(--accent-light)); margin: 0 auto var(--spacing-md);">
+        <i class="fa-solid fa-lock  icon-muted" style="font-size: 2px;"></i>
+      </div>
+      <h1 class="heading-2" style="margin-bottom: var(--spacing-xs);">Vérification OTP</h1>
+      <p class="text-muted">Entrez le code envoyé au</p>
+      <p
+        style="color: rgb(var(--primary)); font-weight: 600; font-size: var(--font-size-lg); margin-top: var(--spacing-xs);">
+        {{ telephone }}
+      </p>
+    </div>
+
+    <div class="card-body">
+      <!-- Messages -->
+      {% if messages %}
+      {% for message in messages %}
+      <div
+        class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+        <i class="fa-solid fa-check alert-icon icon-success" style="font-size: 2px;"></i>
+        <div class="alert-content">{{ message }}</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      {% if not blocked %}
+      <!-- Formulaire OTP -->
+      <form method="post" id="otpForm">
+        {% csrf_token %}
+
+        <!-- Conteneur des 6 inputs OTP -->
+        <div class="otp-container">
+          <input type="text" class="otp-input" id="otp-1" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+          <input type="text" class="otp-input" id="otp-2" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+          <input type="text" class="otp-input" id="otp-3" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+          <input type="text" class="otp-input" id="otp-4" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+          <input type="text" class="otp-input" id="otp-5" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+          <input type="text" class="otp-input" id="otp-6" maxlength="1" pattern="[0-9]" inputmode="numeric"
+            autocomplete="off" required>
+        </div>
+
+        <!-- Input caché pour envoyer le code complet -->
+        <input type="hidden" name="code" id="fullCode">
+
+        <!-- Timer -->
+        <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+          <div id="timer"
+            style="display: inline-flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); background: rgb(var(--muted)); border-radius: var(--radius-lg); font-weight: 600; color: rgb(var(--foreground));">
+            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span id="timerText">10:00</span>
+          </div>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button type="submit" id="submitBtn" class="btn btn-primary btn-full" disabled>
+          <i class="fa-solid fa-circle-check  icon-white" style="font-size: 2px;"></i>
+          Vérifier le code
+        </button>
+      </form>
+
+      <!-- Lien pour renvoyer le code -->
+      <div style="margin-top: var(--spacing-lg); text-align: center;">
+        <p class="text-sm" style="color: rgb(var(--muted-foreground));">
+          Vous n'avez pas reçu le code ?
+          <a href="{% url 'register' %}" style="color: rgb(var(--primary)); font-weight: 500; text-decoration: none;">
+            Renvoyer un code
+          </a>
+        </p>
+      </div>
+      {% else %}
+      <!-- Message de blocage -->
+      <div class="alert alert-error" style="text-align: center; padding: var(--spacing-xl);">
+        <i class="fa-solid fa-triangle-exclamation  icon-error" style="font-size: 2px;"></i>
+        <h3 class="heading-3" style="margin-bottom: var(--spacing-sm); color: rgb(var(--error));">
+          Compte temporairement bloqué
+        </h3>
+        <p class="text-muted">
+          Trop de tentatives échouées. Veuillez réessayer dans 1 heure.
+        </p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="card-footer">
+      <p class="text-xs" style="text-align: center; color: rgb(var(--muted-foreground)); margin: 0;">
+        <i class="fa-solid fa-circle-info  icon-info" style="font-size: 2px;"></i>
+        Le code est valide pendant 10 minutes. Vous avez droit à 3 tentatives maximum.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const submitBtn = document.getElementById('submitBtn');
+    const fullCodeInput = document.getElementById('fullCode');
+    const form = document.getElementById('otpForm');
+
+    if (!otpInputs.length) return;
+
+    // Auto-focus sur le premier input
+    otpInputs[0].focus();
+
+    // Vérifier si tous les champs sont remplis
+    function checkAllFilled() {
+      const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+      submitBtn.disabled = !allFilled;
+
+      if (allFilled) {
+        const code = Array.from(otpInputs).map(input => input.value).join('');
+        fullCodeInput.value = code;
+        otpInputs.forEach(input => input.classList.add('filled'));
+      } else {
+        fullCodeInput.value = '';
+      }
+    }
+
+    // Gestion des inputs OTP
+    otpInputs.forEach((input, index) => {
+      // Input event
+      input.addEventListener('input', function (e) {
+        const value = e.target.value;
+
+        // Valider que c'est un chiffre
+        if (!/^\d$/.test(value)) {
+          e.target.value = '';
+          return;
+        }
+
+        if (value.length === 1) {
+          e.target.classList.add('filled');
+          e.target.classList.remove('error');
+
+          // Passer au suivant
+          if (index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+          }
+        }
+
+        checkAllFilled();
+      });
+
+      // Backspace
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace') {
+          if (e.target.value === '' && index > 0) {
+            otpInputs[index - 1].focus();
+            otpInputs[index - 1].value = '';
+            otpInputs[index - 1].classList.remove('filled');
+          } else {
+            e.target.value = '';
+            e.target.classList.remove('filled');
+          }
+          checkAllFilled();
+        }
+      });
+
+      // Paste support
+      input.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').trim();
+
+        if (/^\d{6}$/.test(pastedData)) {
+          pastedData.split('').forEach((char, i) => {
+            if (i < otpInputs.length) {
+              otpInputs[i].value = char;
+              otpInputs[i].classList.add('filled');
+            }
+          });
+          otpInputs[otpInputs.length - 1].focus();
+          checkAllFilled();
+        }
+      });
+
+      // Focus event
+      input.addEventListener('focus', function () {
+        this.select();
+      });
+    });
+
+    // Timer countdown
+    const timerElement = document.getElementById('timer');
+    const timerText = document.getElementById('timerText');
+    let timeLeft = 600; // 10 minutes
+
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+      // Changer la couleur selon le temps restant
+      if (timeLeft <= 60) {
+        timerElement.style.background = 'rgb(var(--error-light))';
+        timerElement.style.color = 'rgb(var(--error))';
+      } else if (timeLeft <= 180) {
+        timerElement.style.background = 'rgb(var(--warning-light))';
+        timerElement.style.color = 'rgb(var(--warning))';
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timerText.textContent = 'Expiré';
+
+        // Désactiver les inputs
+        otpInputs.forEach(input => {
+          input.disabled = true;
+          input.classList.add('error');
+        });
+        submitBtn.disabled = true;
+
+        // Afficher une alerte
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-error';
+        alert.innerHTML = `
+        <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div class="alert-content">
+          Le code OTP a expiré. Veuillez demander un nouveau code.
+        </div>
+      `;
+        form.insertBefore(alert, form.firstChild);
+      }
+
+      timeLeft--;
+    }
+
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Form submission
+    form.addEventListener('submit', function (e) {
+      if (!fullCodeInput.value || fullCodeInput.value.length !== 6) {
+        e.preventDefault();
+        otpInputs.forEach(input => {
+          if (input.value === '') {
+            input.classList.add('error');
+          }
+        });
+        return false;
+      }
+
+      // Désactiver le bouton et afficher le spinner
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+      <span class="spinner"></span>
+      Vérification...
+    `;
+    });
+  });
+</script>
+{% endblock %}

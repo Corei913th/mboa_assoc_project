@@ -24,3 +24,12 @@ requests==2.32.3
 
 # Utilitaires
 python-dateutil==2.9.0.post0
+
+# Authentification OTP via Twilio
+twilio==9.0.0
+django-phonenumber-field==7.3.0
+phonenumbers==8.13.0
+
+# Testing
+hypothesis==6.98.0
+freezegun==1.4.0

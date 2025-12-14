@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#10b981">
+  <meta name="description" content="Plateforme de gestion des associations camerounaises">
+  <title>{% block title %}Mboa Association{% endblock %}</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Header -->
+      <div class="sidebar-header">
+        <a href="{% url 'dashboard' %}" class="sidebar-brand">
+          <i class="fa-solid fa-building sidebar-nav-icon icon-primary"></i>
+          Mboa Assoc
+        </a>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <a href="{% url 'dashboard' %}"
+          class="sidebar-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="fa-solid fa-house sidebar-nav-icon icon-primary"></i>
+          Tableau de bord
+        </a>
+
+        <a href="{% url 'profile' %}"
+          class="sidebar-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          <i class="fa-solid fa-user sidebar-nav-icon icon-primary"></i>
+          Mon Profil
+        </a>
+
+        <div class="separator" style="margin: var(--spacing-md) 0;">
+          <span class="separator-text">Associations</span>
+        </div>
+
+        <a href="#" class="sidebar-nav-item">
+          <i class="fa-solid fa-users sidebar-nav-icon icon-accent"></i>
+          Mes Associations
+        </a>
+
+        <a href="#" class="sidebar-nav-item">
+          <i class="fa-solid fa-coins sidebar-nav-icon icon-warning"></i>
+          Cotisations
+        </a>
+      </nav>
+
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <a href="{% url 'logout' %}" class="btn btn-secondary btn-full">
+          <i class="fa-solid fa-right-from-bracket sidebar-nav-icon icon-primary"></i>
+          Déconnexion
+        </a>
+      </div>
+    </aside>
+
+    <!-- Overlay pour mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Bouton toggle pour mobile -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <i class="fa-solid fa-bars icon-muted" style="font-size: 24px;"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- Sidebar Script -->
+  <script src="{% static 'js/sidebar.js' %}"></script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

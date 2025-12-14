@@ -145,6 +145,68 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Modèle utilisateur personnalisé
 AUTH_USER_MODEL = 'mboa_assoc_app.Membre'
 
+# Backend d'authentification personnalisé pour utiliser le téléphone
+AUTHENTICATION_BACKENDS = [
+    'mboa_assoc_app.backends.PhoneBackend',  # Authentification par téléphone
+    'django.contrib.auth.backends.ModelBackend',  # Fallback pour l'admin Django
+]
+
+# URLs d'authentification
+LOGIN_URL = 'login'  # Nom de l'URL de login
+LOGIN_REDIRECT_URL = 'dashboard'  # Redirection après login réussi
+LOGOUT_REDIRECT_URL = 'login'  # Redirection après logout
+
 # Configuration des médias (pour les photos de profil)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Configuration Twilio pour l'envoi de SMS OTP
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+# Contrôle l'envoi réel de SMS (True = vrais SMS, False = simulation dans les logs)
+TWILIO_SEND_REAL_SMS = os.getenv('TWILIO_SEND_REAL_SMS', 'False') == 'True'
+
+# Configuration OTP
+OTP_EXPIRATION_MINUTES = int(os.getenv('OTP_EXPIRATION_MINUTES', 10))
+OTP_MAX_ATTEMPTS = int(os.getenv('OTP_MAX_ATTEMPTS', 3))
+PHONE_BLOCK_DURATION_HOURS = int(os.getenv('PHONE_BLOCK_DURATION_HOURS', 1))
+PHONE_MAX_FAILURES = int(os.getenv('PHONE_MAX_FAILURES', 5))
+
+# Configuration du logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'mboa_assoc_app': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
