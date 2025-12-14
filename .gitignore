@@ -1,41 +1,124 @@
+# ============================================
 # Python
+# ============================================
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-*.egg
-*.egg-info/
-dist/
+.Python
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Environnements virtuels
-venv/
-env/
-.venv/
-
+# ============================================
 # Django
+# ============================================
 *.log
+local_settings.py
 db.sqlite3
 db.sqlite3-journal
-/staticfiles/
-/media/
+/media
+/staticfiles
+/static
 
-# Variables d'environnement
+# ============================================
+# Environment
+# ============================================
 .env
-.env.local
-.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# IDE
+# ============================================
+# IDE / Editor
+# ============================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
-Thumbs.db
 
-#Migrations (optionnel - décommenter si besoin)
-*/migrations/*.py
-*/migrations/__init__.py
+# ============================================
+# Documentation Markdown (à exclure)
+# ============================================
+AJOUT_MOT_DE_PASSE.md
+AMELIORATIONS_OTP.md
+BUGFIX_URLS.md
+COMMENT_VOIR_LES_LOGS.md
+CONFIGURATION_TWILIO_SMS_REELS.md
+DESIGN_SYSTEM_SHADCN.md
+FIX_FAKE_SMS_RETURN.md
+FIX_LOGIN_TELEPHONE.md
+GUIDE_RAPIDE_LOGS.md
+IMPLEMENTATION_GUIDE_SHADCN.md
+IMPLEMENTATION_SHADCN_DESIGN.md
+MANUAL_TESTING_README.md
+PROFILE_OPTIMIZATION_SUMMARY.md
+QUICK_START_TESTING.md
+RESUME_FINAL_OTP.md
+TESTING_SUMMARY.md
+TEST_CHECKLIST.md
+TEST_LOGIN_RAPIDE.md
+TEST_OTP_PRODUCTION.md
+mboa_assoc_app/manual_testing_guide.md
+
+# ============================================
+# Scripts de test et utilitaires (à exclure)
+# ============================================
+add_icon_colors.py
+replace_icons.py
+check_system.py
+test_phone_auth.py
+test_sms_mode.py
+test_ui.html
+mboa_assoc_app/manual_testing_helper.py
+mboa_assoc_app/verify_system_ready.py
+
+# ============================================
+# Kiro IDE
+# ============================================
+.kiro/
+
+# ============================================
+# Git
+# ============================================
+*.orig
+*.rej
+
+# ============================================
+# OS
+# ============================================
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================================
+# Backup files
+# ============================================
+*.bak
+*.backup
+*~
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
