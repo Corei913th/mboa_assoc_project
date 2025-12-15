@@ -3,6 +3,7 @@
 
 from django.urls import path, include
 from .views import (
+    landing_view,
     register_view,
     verify_otp_view,
     login_view,
@@ -25,7 +26,7 @@ urlpatterns = [
     path("__reload__/", include("django_browser_reload.urls")),
 
     # Dashboard
-    path('', dashboard_view, name='dashboard'),
+    path('dashboard/', dashboard_view, name='dashboard'),
     
     # Authentication URLs
     path('auth/register/', register_view, name='register'),
