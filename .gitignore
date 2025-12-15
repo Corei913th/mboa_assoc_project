@@ -69,6 +69,7 @@ FIX_LOGIN_TELEPHONE.md
 GUIDE_RAPIDE_LOGS.md
 IMPLEMENTATION_GUIDE_SHADCN.md
 IMPLEMENTATION_SHADCN_DESIGN.md
+LANDING_PAGE_INFO.md
 MANUAL_TESTING_README.md
 PROFILE_OPTIMIZATION_SUMMARY.md
 QUICK_START_TESTING.md
@@ -84,12 +85,15 @@ mboa_assoc_app/manual_testing_guide.md
 # ============================================
 add_icon_colors.py
 replace_icons.py
+replace_images.py
 check_system.py
 test_phone_auth.py
 test_sms_mode.py
 test_ui.html
 mboa_assoc_app/manual_testing_helper.py
 mboa_assoc_app/verify_system_ready.py
+mboa_assoc_app/verify_system_ready.py
+test_phone_auth.py
 
 # ============================================
 # Kiro IDE
@@ -122,3 +126,9 @@ Thumbs.db
 # ============================================
 *.tmp
 *.temp
+
+# ============================================
+# Windows reserved names
+# ============================================
+nul
+mboa_assoc_app/views/nul

@@ -2,6 +2,7 @@
 
 from django.urls import path
 from .views import (
+    landing_view,
     register_view,
     verify_otp_view,
     login_view,
@@ -11,8 +12,11 @@ from .views import (
 )
 
 urlpatterns = [
+    # Landing page
+    path('', landing_view, name='landing'),
+    
     # Dashboard
-    path('', dashboard_view, name='dashboard'),
+    path('dashboard/', dashboard_view, name='dashboard'),
     
     # Authentication URLs
     path('auth/register/', register_view, name='register'),
