@@ -1,1 +1,214 @@
-<!-- Détail d'un membre -->
+<!-- templates/membres/detail.html -->
+{% extends 'base_with_sidebar.html' %}
+{% load static %}
+
+{% block title %}Profil - {{ membre.get_full_name }} - Mboa Association{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Header avec retour -->
+    <div class="flex-between mb-md py-3">
+        <div>
+            <a href="{% url 'liste_membres' association.id %}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Retour à la liste
+            </a>
+        </div>
+        
+        {% if user_adhesion.role == 'PRESIDENT' and membre != user %}
+        <div class="flex gap-sm">
+            <a href="#" class="btn btn-outline">
+                <i class="fa-solid fa-message"></i>
+                Contacter
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Header du profil -->
+    <div class="profile-header">
+        <div class="flex-col-center md:flex-row md:items-start gap-md">
+            <!-- Avatar -->
+            {% if membre.photo_profil %}
+            <img src="{{ membre.photo_profil.url }}" 
+                 alt="{{ membre.get_full_name }}" 
+                 class="profile-avatar-large">
+            {% else %}
+            <div class="profile-avatar-large flex-center bg-white text-primary">
+                <i class="fa-solid fa-user text-4xl"></i>
+            </div>
+            {% endif %}
+            
+            <!-- Informations principales -->
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="heading-1 mb-sm">{{ membre.get_full_name }}</h1>
+                <p class="text-xl opacity-90 mb-md">{{ membre.profession|default:"Membre d'association" }}</p>
+                
+                <div class="flex flex-wrap gap-sm justify-center md:justify-start">
+                    <span class="badge-large">
+                        <i class="fa-solid 
+                            {% if adhesion.role == 'PRESIDENT' %}fa-crown
+                            {% elif adhesion.role == 'TRESORIER' %}fa-coins
+                            {% else %}fa-user{% endif %}">
+                        </i>
+                        {{ adhesion.get_role_display }}
+                    </span>
+                    
+                    <span class="badge-large 
+                        {% if membre.statut == 'A_JOUR' %}text-success
+                        {% elif membre.statut == 'EN_RETARD' %}text-warning
+                        {% else %}text-error{% endif %}">
+                        <i class="fa-solid fa-circle"></i>
+                        {{ membre.get_statut_display }}
+                    </span>
+                    
+                    {% if membre.telephone_verifie %}
+                    <span class="badge-large text-success">
+                        <i class="fa-solid fa-check"></i>
+                        Téléphone vérifié
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grille d'informations -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-md">
+        <!-- Informations personnelles -->
+        <div class="profile-card lg:col-span-2">
+            <h2 class="text-xl font-semibold mb-md">Informations personnelles</h2>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Téléphone</div>
+                    <div class="info-value">
+                        <i class="fa-solid fa-phone text-muted mr-sm"></i>
+                        {{ membre.telephone }}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">
+                        {% if membre.email %}
+                        <i class="fa-solid fa-envelope text-muted mr-sm"></i>
+                        {{ membre.email }}
+                        {% else %}
+                        <span class="text-muted">Non spécifié</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Localisation</div>
+                    <div class="info-value">
+                        <i class="fa-solid fa-location-dot text-muted mr-sm"></i>
+                        {% if membre.ville %}
+                        {{ membre.ville }}{% if membre.quartier %}, {{ membre.quartier }}{% endif %}
+                        {% else %}
+                        <span class="text-muted">Non spécifié</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Adresse</div>
+                    <div class="info-value">
+                        {% if membre.adresse %}
+                        <i class="fa-solid fa-house text-muted mr-sm"></i>
+                        {{ membre.adresse|truncatechars:50 }}
+                        {% else %}
+                        <span class="text-muted">Non spécifiée</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Date de naissance</div>
+                    <div class="info-value">
+                        {% if membre.date_naissance %}
+                        <i class="fa-solid fa-cake-candles text-muted mr-sm"></i>
+                        {{ membre.date_naissance|date:"d/m/Y" }}
+                        {% else %}
+                        <span class="text-muted">Non spécifiée</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Membre depuis</div>
+                    <div class="info-value">
+                        <i class="fa-solid fa-calendar text-muted mr-sm"></i>
+                        {{ adhesion.date|date:"d/m/Y" }}
+                        ({{ adhesion.date|timesince }})
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistiques -->
+        <div class="profile-card">
+            <h2 class="text-xl font-semibold mb-md">Dans cette association</h2>
+            
+            <div class="space-y-md">
+                <div class="stat-card">
+                    <div class="stat-number">{{ adhesion.date|date:"d/m/Y" }}</div>
+                    <div class="stat-label">Date d'adhésion</div>
+                </div>
+                
+                <div class="p-md bg-primary-lightest rounded-lg">
+                    <h3 class="font-semibold mb-sm">Rôle actuel</h3>
+                    <div class="flex items-center gap-sm">
+                        <i class="fa-solid 
+                            {% if adhesion.role == 'PRESIDENT' %}fa-crown text-warning
+                            {% elif adhesion.role == 'TRESORIER' %}fa-coins text-accent
+                            {% else %}fa-user text-muted{% endif %}">
+                        </i>
+                        <span class="font-semibold">{{ adhesion.get_role_display }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-md bg-info-light rounded-lg">
+                    <h3 class="font-semibold mb-sm">Statut des cotisations</h3>
+                    <div class="flex items-center gap-sm">
+                        <i class="fa-solid fa-circle 
+                            {% if membre.statut == 'A_JOUR' %}text-success
+                            {% elif membre.statut == 'EN_RETARD' %}text-warning
+                            {% else %}text-error{% endif %}">
+                        </i>
+                        <span>{{ membre.get_statut_display }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Associations communes -->
+    {% if associations_communes %}
+    <div class="profile-card mb-md">
+        <h2 class="text-xl font-semibold mb-md">Associations communes</h2>
+        <div class="association-list">
+            {% for assoc in associations_communes %}
+            <span class="association-tag">
+                <i class="fa-solid fa-users text-muted mr-1"></i>
+                {{ assoc.nom }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Notes (pour président) -->
+    {% if user_adhesion.role == 'PRESIDENT' %}
+    <div class="profile-card">
+        <h2 class="text-xl font-semibold mb-md">Notes (privées)</h2>
+        <textarea class="input w-full h-32" placeholder="Ajoutez des notes privées sur ce membre..."></textarea>
+        <button class="btn btn-primary mt-sm">
+            <i class="fa-solid fa-save"></i>
+            Enregistrer les notes
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

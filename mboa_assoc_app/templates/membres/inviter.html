@@ -1,0 +1,188 @@
+<!-- templates/membres/inviter.html -->
+{% extends 'base_with_sidebar.html' %}
+{% load static %}
+
+{% block title %}Inviter des membres - {{ association.nom }} - Mboa Association{% endblock %}
+
+{% block content %}
+<div class="inviter-container">
+    <!-- Header -->
+    <div class="flex-between mb-lg">
+        <div>
+            <h1 class="heading-2 mb-sm">Inviter des membres</h1>
+            <p class="text-muted">{{ association.nom }}</p>
+        </div>
+        
+        <div>
+            <a href="{% url 'liste_membres' association.id %}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Retour aux membres
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulaire d'invitation -->
+    <div class="invitation-card mb-lg">
+        <h2 class="text-xl font-semibold mb-md">Inviter par numéro de téléphone</h2>
+        
+        <form method="POST" action="{% url 'inviter_membres' association.id %}">
+            {% csrf_token %}
+            
+            <div class="mb-md">
+                <label for="telephone" class="block text-sm font-medium mb-sm">
+                    Numéro de téléphone
+                </label>
+                <div class="telephone-input-group">
+                    <input type="tel" 
+                           id="telephone" 
+                           name="telephone" 
+                           placeholder="+237 6XX XX XX XX" 
+                           class="input telephone-input"
+                           required
+                           pattern="^\+237[0-9]{9}$"
+                           title="Format: +237 suivi de 9 chiffres">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Envoyer l'invitation
+                    </button>
+                </div>
+                <p class="help-text mt-sm">
+                    Format: +237 suivi de 9 chiffres (ex: +237612345678)
+                </p>
+            </div>
+        </form>
+        
+        <!-- Invitations multiples (future feature) -->
+        <div class="border-t pt-md mt-md">
+            <h3 class="text-lg font-semibold mb-sm">Invitations multiples</h3>
+            <p class="text-muted mb-md">
+                (Fonctionnalité à venir : importer une liste de numéros)
+            </p>
+            <textarea class="input w-full h-32" 
+                      placeholder="Collez une liste de numéros (un par ligne)..."
+                      disabled></textarea>
+            <button class="btn btn-outline mt-sm" disabled>
+                <i class="fa-solid fa-upload"></i>
+                Inviter plusieurs membres
+            </button>
+        </div>
+    </div>
+
+    <!-- Invitations en attente -->
+    <div>
+        <h2 class="text-xl font-semibold mb-md">Invitations envoyées</h2>
+        
+        {% if invitations_en_attente %}
+        <div class="invitations-list">
+            {% for invitation in invitations_en_attente %}
+            <div class="invitation-item {% if not invitation.est_valide %}expired{% endif %}">
+                <div class="flex-between mb-sm">
+                    <div>
+                        <h3 class="font-semibold">{{ invitation.telephone_invite }}</h3>
+                        <p class="text-sm text-muted">
+                            Invité par {{ invitation.createur.get_full_name }} le 
+                            {{ invitation.date_creation|date:"d/m/Y à H:i" }}
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center gap-sm">
+                        <span class="status-badge status-{{ invitation.statut|lower|slugify }}">
+                            {% if invitation.est_valide %}
+                            En attente
+                            {% else %}
+                            Expirée
+                            {% endif %}
+                        </span>
+                        
+                        <span class="text-xs text-muted">
+                            Code: <strong>{{ invitation.code }}</strong>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="flex-between">
+                    <div class="text-sm">
+                        <i class="fa-solid fa-clock text-muted mr-1"></i>
+                        Expire le {{ invitation.date_expiration|date:"d/m/Y à H:i" }}
+                    </div>
+                    
+                    <div class="text-sm">
+                        {% if invitation.est_valide %}
+                        <span class="text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            En attente de réponse
+                        </span>
+                        {% else %}
+                        <span class="text-error">
+                            <i class="fa-solid fa-clock"></i>
+                            Expirée
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-envelope-open empty-state-icon"></i>
+            <h3 class="text-lg font-semibold mb-sm">Aucune invitation en attente</h3>
+            <p class="text-muted mb-md">Les invitations que vous envoyez apparaîtront ici.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Instructions -->
+    <div class="info-box mt-lg">
+        <h3 class="font-semibold mb-sm flex gap-sm">
+            <i class="fa-solid fa-info-circle"></i>
+            Comment fonctionnent les invitations ?
+        </h3>
+        <ul class="list-disc pl-5 space-y-1 text-sm">
+            <li>L'invitation est valide pendant 7 jours</li>
+            <li>Le membre reçoit une notification sur son tableau de bord</li>
+            <li>Vous pouvez renvoyer une invitation si elle expire</li>
+            <li>Seuls les présidents peuvent inviter de nouveaux membres</li>
+            <li>Un membre ne peut pas être invité s'il est déjà membre</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formater le numéro de téléphone
+    const telephoneInput = document.getElementById('telephone');
+    
+    telephoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        if (value.length > 0) {
+            if (!value.startsWith('237')) {
+                value = '237' + value;
+            }
+            if (!value.startsWith('+237')) {
+                value = '+' + value;
+            }
+        }
+        
+        // Limiter à 13 caractères (+237 + 9 chiffres)
+        if (value.length > 13) {
+            value = value.substring(0, 13);
+        }
+        
+        e.target.value = value;
+    });
+    
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!telephoneInput.validity.valid) {
+            e.preventDefault();
+            alert('Veuillez entrer un numéro de téléphone valide au format +237XXXXXXXXX');
+        }
+    });
+});
+</script>
+{% endblock %}

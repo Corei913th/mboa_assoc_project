@@ -57,6 +57,14 @@
           Mes Associations
         </a>
 
+        <a href="{% url 'mes_invitations' %}" class="sidebar-nav-item">
+          <i class="fa-solid fa-envelope sidebar-nav-icon icon-accent"></i>
+          Mes Invitations
+          {% if invitations_en_attente_count > 0 %}
+          <span class="badge badge-accent badge-pulse">{{ invitations_en_attente_count }}</span>
+          {% endif %}
+        </a>
+
         <a href="#" class="sidebar-nav-item">
           <i class="fa-solid fa-coins sidebar-nav-icon icon-warning"></i>
           Cotisations

@@ -373,7 +373,70 @@ class Adhesion(models.Model):
         return f"{self.membre.nom_complet} - {self.association.nom}"
 
 
+# models.py - Ajouter après le modèle Adhesion
 
+class Invitation(models.Model):
+    """
+    Gère les invitations à rejoindre une association.
+    """
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Code unique d'invitation"
+    )
+    association = models.ForeignKey(
+        Association,
+        on_delete=models.CASCADE,
+        related_name='invitations'
+    )
+    telephone_invite = models.CharField(
+        max_length=20,
+        help_text="Numéro de téléphone invité"
+    )
+    createur = models.ForeignKey(
+        Membre,
+        on_delete=models.CASCADE,
+        related_name='invitations_envoyees'
+    )
+    
+    # Statuts possibles
+    class StatutInvitation(models.TextChoices):
+        EN_ATTENTE = 'EN_ATTENTE', 'En attente'
+        ACCEPTEE = 'ACCEPTEE', 'Acceptée'
+        REFUSEE = 'REFUSEE', 'Refusée'
+        EXPIREE = 'EXPIREE', 'Expirée'
+    
+    statut = models.CharField(
+        max_length=20,
+        choices=StatutInvitation.choices,
+        default=StatutInvitation.EN_ATTENTE
+    )
+    
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_expiration = models.DateTimeField(
+        help_text="Date d'expiration de l'invitation (7 jours)"
+    )
+    date_reponse = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        verbose_name = 'Invitation'
+        verbose_name_plural = 'Invitations'
+        ordering = ['-date_creation']
+        indexes = [
+            models.Index(fields=['code']),
+            models.Index(fields=['telephone_invite', 'statut']),
+        ]
+    
+    def __str__(self):
+        return f"Invitation {self.code} pour {self.telephone_invite}"
+    
+    def est_valide(self):
+        """Vérifie si l'invitation est encore valide"""
+        from django.utils import timezone
+        return (
+            self.statut == self.StatutInvitation.EN_ATTENTE and 
+            timezone.now() < self.date_expiration
+        )
 
 
 class Cotisation(models.Model):
