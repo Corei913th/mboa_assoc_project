@@ -85,6 +85,83 @@
 
     </div>
 
+    <!-- Mes Associations -->
+    <div class="card mb-6">
+      <div class="card-header">
+        <div class="flex-between">
+          <h2 class="text-xl font-bold">Mes Associations</h2>
+          <a href="{% url 'mboa_assoc_app:create_association' %}" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i>
+            Créer une association
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if associations %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {% for adhesion in associations %}
+          <div class="card border hover:shadow-lg transition-shadow">
+            <div class="card-body">
+              <div class="flex-between mb-3">
+                <h3 class="font-bold text-lg">{{ adhesion.association.name }}</h3>
+                <span class="badge badge-primary">{{ adhesion.get_role_display }}</span>
+              </div>
+              <p class="text-sm text-muted mb-4">{{ adhesion.association.get_type_display }}</p>
+              <div class="flex gap-2">
+                <a href="{% url 'mboa_assoc_app:association_dashboard' adhesion.association.id %}"
+                  class="btn btn-primary btn-sm flex-1">
+                  <i class="fa-solid fa-chart-line"></i>
+                  Dashboard
+                </a>
+                <a href="{% url 'mboa_assoc_app:liste_cotisations' adhesion.association.id %}"
+                  class="btn btn-outline btn-sm">
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+          <i class="fa-solid fa-users text-6xl text-muted mb-4"></i>
+          <p class="text-muted mb-4">Vous n'êtes membre d'aucune association</p>
+          <a href="{% url 'mboa_assoc_app:create_association' %}" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            Créer ma première association
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Actions Rapides -->
+    <div class="card mb-6">
+      <div class="card-header">
+        <h2 class="text-xl font-bold">Actions Rapides</h2>
+      </div>
+      <div class="card-body">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a href="{% url 'mboa_assoc_app:mes_invitations' %}" class="btn btn-outline">
+            <i class="fa-solid fa-envelope"></i>
+            Mes Invitations
+          </a>
+          <a href="{% url 'mboa_assoc_app:my_associations' %}" class="btn btn-outline">
+            <i class="fa-solid fa-building"></i>
+            Mes Associations
+          </a>
+          <a href="{% url 'mboa_assoc_app:profile' %}" class="btn btn-outline">
+            <i class="fa-solid fa-user"></i>
+            Mon Profil
+          </a>
+          <a href="{% url 'mboa_assoc_app:create_association' %}" class="btn btn-outline">
+            <i class="fa-solid fa-plus"></i>
+            Créer Association
+          </a>
+        </div>
+      </div>
+    </div>
+
     <!-- Message de bienvenue ou Appel à l'action -->
     {% if not user.ville or not user.quartier %}
     <!-- Profil incomplet -->
