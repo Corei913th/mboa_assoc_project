@@ -5,16 +5,16 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 
-from .models import Association, Adhesion, Membre
-from .forms import (
+from ..models import Association, Adhesion, Membre, Role
+from ..forms import (
     AssociationForm, 
     AddMemberForm, 
     NominatePresidentForm,
     NominateTreasurerForm,
     SearchMemberForm
 )
-from .services.association_service import AssociationService
-from .services.member_service import MemberService
+from ..services.association_service import AssociationService
+from ..services.member_service import MemberService
 
 
 @login_required
@@ -191,7 +191,6 @@ def add_member(request, id):
     user_id = request.POST.get('user_id')
     try:
         user_to_add = Membre.objects.get(id=user_id)
-        from .models import Role
         MemberService.add_member(association, user_to_add, Role.MEMBRE, request.user)
         messages.success(request, f"{user_to_add.username} a été ajouté à l'association")
     except Membre.DoesNotExist:

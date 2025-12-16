@@ -3,12 +3,23 @@
 from django.urls import path, include
 from .views import (
     landing_view,
-    register_view,
-    verify_otp_view,
+    register_view, 
+    verify_otp_view,  
     login_view,
     logout_view,
     profile_view,
-    dashboard_view
+    dashboard_view,
+    create_association,
+    association_detail,
+    association_settings,
+    manage_members,
+    add_member,
+    remove_member,
+    nominate_president,
+    nominate_treasurer,
+    archive_association,
+    delete_association,
+    my_associations
 )
 
 from .views.membres_views import (
@@ -20,8 +31,6 @@ from .views.membres_views import (
     detail_membre_view,
     invitations_en_attente_view,
 )
-
-from . import views
 
 app_name = 'mboa_assoc_app'
 
@@ -42,15 +51,15 @@ urlpatterns = [
     path('auth/profile/', profile_view, name='profile'),
 
     # Associations URLs
-    path('association/creer/', views.create_association, name='create_association'),
-    path('mes-associations/', views.my_associations, name='my_associations'),
-    path('association/<int:id>/', views.association_detail, name='association_detail'),
-    path('association/<int:id>/parametres/', views.association_settings, name='association_settings'),
+    path('association/creer/', create_association, name='create_association'),
+    path('mes-associations/', my_associations, name='my_associations'),
+    path('association/<int:id>/', association_detail, name='association_detail'),
+    path('association/<int:id>/parametres/', association_settings, name='association_settings'),
     
     # Gestion des membres (nouvelle structure)
-    path('association/<int:id>/membres/', views.manage_members, name='manage_members'),
-    path('association/<int:id>/membres/ajouter/', views.add_member, name='add_member'),
-    path('association/<int:id>/membres/<int:member_id>/retirer/', views.remove_member, name='remove_member'),
+    path('association/<int:id>/membres/', manage_members, name='manage_members'),
+    path('association/<int:id>/membres/ajouter/', add_member, name='add_member'),
+    path('association/<int:id>/membres/<int:member_id>/retirer/', remove_member, name='remove_member'),
     
     # Membres URLs (ancienne structure - à migrer)
     path('associations/<int:association_id>/membres/', liste_membres_view, name='liste_membres'),
@@ -62,10 +71,10 @@ urlpatterns = [
     path('mes-invitations/', invitations_en_attente_view, name='mes_invitations'),
     
     # Nominations
-    path('association/<int:id>/nommer-president/', views.nominate_president, name='nominate_president'),
-    path('association/<int:id>/nommer-tresorier/', views.nominate_treasurer, name='nominate_treasurer'),
+    path('association/<int:id>/nommer-president/', nominate_president, name='nominate_president'),
+    path('association/<int:id>/nommer-tresorier/', nominate_treasurer, name='nominate_treasurer'),
     
     # Actions sur l'association
-    path('association/<int:id>/archiver/', views.archive_association, name='archive_association'),
-    path('association/<int:id>/supprimer/', views.delete_association, name='delete_association'),
+    path('association/<int:id>/archiver/', archive_association, name='archive_association'),
+    path('association/<int:id>/supprimer/', delete_association, name='delete_association'),
 ]

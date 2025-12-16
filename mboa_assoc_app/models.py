@@ -74,6 +74,10 @@ class Membre(AbstractUser):
     Représente un membre d'une association avec authentification intégrée.
     Champs hérités: username, password, email, first_name, last_name, is_active, date_joined
     """
+    # Utiliser le téléphone comme identifiant unique pour l'authentification
+    USERNAME_FIELD = 'telephone'
+    REQUIRED_FIELDS = ['username', 'email']  # Champs requis en plus de telephone et password
+    
     # Champs personnalisés
     telephone = models.CharField(
         max_length=20, 
@@ -88,8 +92,24 @@ class Membre(AbstractUser):
     )
     adresse = models.TextField(blank=True, help_text="Adresse physique")
     ville = models.CharField(max_length=100, blank=True)
+    quartier = models.CharField(
+        max_length=100, 
+        blank=True,
+        help_text="Quartier de résidence"
+    )
     date_naissance = models.DateField(null=True, blank=True)
     profession = models.CharField(max_length=100, blank=True)
+    
+    # Champs OTP
+    telephone_verifie = models.BooleanField(
+        default=False,
+        help_text="Indique si le numéro de téléphone a été vérifié par OTP"
+    )
+    date_verification_telephone = models.DateTimeField(
+        null=True, 
+        blank=True,
+        help_text="Date de vérification du téléphone"
+    )
     
     # Statut du membre
     statut = models.CharField(
@@ -367,6 +387,7 @@ class Adhesion(models.Model):
         return self.role in [Role.PRESIDENT, Role.TRESORIER] and self.is_active
 
 
+# models.py - Ajouter après le modèle Adhesion
 #-----------------------------------------------------------------#
 #                          ABONNEMENTS                            #
 #-----------------------------------------------------------------#
@@ -402,6 +423,68 @@ class Fonctionnalite(models.Model):
     def __str__(self):
         return self.nom
 
+class Invitation(models.Model):
+    """
+    Gère les invitations à rejoindre une association.
+    """
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Code unique d'invitation"
+    )
+    association = models.ForeignKey(
+        Association,
+        on_delete=models.CASCADE,
+        related_name='invitations'
+    )
+    telephone_invite = models.CharField(
+        max_length=20,
+        help_text="Numéro de téléphone invité"
+    )
+    createur = models.ForeignKey(
+        Membre,
+        on_delete=models.CASCADE,
+        related_name='invitations_envoyees'
+    )
+    
+    # Statuts possibles
+    class StatutInvitation(models.TextChoices):
+        EN_ATTENTE = 'EN_ATTENTE', 'En attente'
+        ACCEPTEE = 'ACCEPTEE', 'Acceptée'
+        REFUSEE = 'REFUSEE', 'Refusée'
+        EXPIREE = 'EXPIREE', 'Expirée'
+    
+    statut = models.CharField(
+        max_length=20,
+        choices=StatutInvitation.choices,
+        default=StatutInvitation.EN_ATTENTE
+    )
+    
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_expiration = models.DateTimeField(
+        help_text="Date d'expiration de l'invitation (7 jours)"
+    )
+    date_reponse = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        verbose_name = 'Invitation'
+        verbose_name_plural = 'Invitations'
+        ordering = ['-date_creation']
+        indexes = [
+            models.Index(fields=['code']),
+            models.Index(fields=['telephone_invite', 'statut']),
+        ]
+    
+    def __str__(self):
+        return f"Invitation {self.code} pour {self.telephone_invite}"
+    
+    def est_valide(self):
+        """Vérifie si l'invitation est encore valide"""
+        from django.utils import timezone
+        return (
+            self.statut == self.StatutInvitation.EN_ATTENTE and 
+            timezone.now() < self.date_expiration
+        )
 
 class PlanTarifaire(models.Model):
     """
@@ -690,4 +773,135 @@ class Notification(models.Model):
         ]
     
     def __str__(self):
+        return f"{self.get_type_notification_display()} - {self.membre.username}"
+
+
+# ============================================================================
+# MODÈLES OTP - Authentification par code SMS
+# ============================================================================
+
+class OTPCode(models.Model):
+    """
+    Stocke les codes OTP générés pour l'authentification par SMS.
+    Un code OTP est valide pendant 10 minutes et limité à 3 tentatives.
+    """
+    telephone = models.CharField(
+        max_length=20,
+        help_text="Numéro de téléphone au format +237XXXXXXXXX"
+    )
+    code = models.CharField(
+        max_length=6,
+        help_text="Code OTP à 6 chiffres"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Date et heure de création du code"
+    )
+    expires_at = models.DateTimeField(
+        help_text="Date et heure d'expiration du code (10 minutes après création)"
+    )
+    is_validated = models.BooleanField(
+        default=False,
+        help_text="Indique si le code a été validé avec succès"
+    )
+    is_expired = models.BooleanField(
+        default=False,
+        help_text="Indique si le code a expiré ou été invalidé"
+    )
+    attempts = models.IntegerField(
+        default=0,
+        help_text="Nombre de tentatives de validation"
+    )
+    date_envoi = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure d'envoi du SMS"
+    )
+    
+    class Meta:
+        verbose_name = 'Code OTP'
+        verbose_name_plural = 'Codes OTP'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['telephone', '-created_at']),
+            models.Index(fields=['expires_at']),
+        ]
+    
+    def __str__(self):
+        return f"OTP {self.code} pour {self.telephone}"
+
+
+class OTPAttempt(models.Model):
+    """
+    Enregistre l'historique des tentatives de validation OTP.
+    Permet de tracer les tentatives réussies et échouées pour la sécurité.
+    """
+    otp_code = models.ForeignKey(
+        OTPCode,
+        on_delete=models.CASCADE,
+        related_name='tentatives',
+        help_text="Code OTP concerné"
+    )
+    attempted_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Date et heure de la tentative"
+    )
+    success = models.BooleanField(
+        help_text="Indique si la tentative a réussi"
+    )
+    ip_address = models.GenericIPAddressField(
+        help_text="Adresse IP de l'utilisateur"
+    )
+    
+    class Meta:
+        verbose_name = 'Tentative OTP'
+        verbose_name_plural = 'Tentatives OTP'
+        ordering = ['-attempted_at']
+        indexes = [
+            models.Index(fields=['otp_code', '-attempted_at']),
+        ]
+    
+    def __str__(self):
+        status = "Réussie" if self.success else "Échouée"
+        return f"Tentative {status} - {self.otp_code.telephone} à {self.attempted_at}"
+
+
+class PhoneBlock(models.Model):
+    """
+    Gère les blocages temporaires de numéros de téléphone.
+    Un numéro est bloqué après 5 échecs de validation OTP pour 1 heure.
+    """
+    telephone = models.CharField(
+        max_length=20,
+        unique=True,
+        help_text="Numéro de téléphone bloqué"
+    )
+    blocked_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Date et heure du blocage"
+    )
+    blocked_until = models.DateTimeField(
+        help_text="Date et heure de fin du blocage"
+    )
+    total_failures = models.IntegerField(
+        default=0,
+        help_text="Nombre total d'échecs ayant conduit au blocage"
+    )
+    reason = models.CharField(
+        max_length=100,
+        help_text="Raison du blocage"
+    )
+    
+    class Meta:
+        verbose_name = 'Blocage de téléphone'
+        verbose_name_plural = 'Blocages de téléphone'
+        ordering = ['-blocked_at']
+        indexes = [
+            models.Index(fields=['telephone']),
+            models.Index(fields=['blocked_until']),
+        ]
+    
+    def __str__(self):
+        return f"Blocage {self.telephone} jusqu'à {self.blocked_until}"
+  
         return f"{self.get_type_notification_display()} - {self.membre.username}"
