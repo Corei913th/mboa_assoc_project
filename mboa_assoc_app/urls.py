@@ -35,8 +35,6 @@ from .views.membres_views import (
 app_name = 'mboa_assoc_app'
 
 urlpatterns = [
-    path("__reload__/", include("django_browser_reload.urls")),
-
     # Landing page (page d'accueil publique)
     path('', landing_view, name='landing'),
 
