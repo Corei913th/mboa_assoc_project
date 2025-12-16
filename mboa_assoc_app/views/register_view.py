@@ -70,7 +70,7 @@ def register_view(request):
                     logger.info(f"SMS OTP envoyé avec succès à {telephone}")
                     
                     # Rediriger vers la page de vérification OTP (Requirement 1.5)
-                    return redirect('verify_otp')
+                    return redirect('mboa_assoc_app:verify_otp')
                 else:
                     # Échec de l'envoi SMS (Requirement 6.3)
                     messages.error(

@@ -36,4 +36,4 @@ def logout_view(request):
         )
     
     # Rediriger vers page de connexion (Requirement 4.5)
-    return redirect('login')
+    return redirect('mboa_assoc_app:login')

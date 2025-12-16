@@ -41,7 +41,7 @@ def profile_view(request):
                 logger.info(f"Profil mis à jour pour l'utilisateur {membre.username}")
                 
                 # Rediriger vers la même page pour afficher les modifications
-                return redirect('profile')
+                return redirect('mboa_assoc_app:profile')
                 
             except Exception as e:
                 # Gestion des erreurs système

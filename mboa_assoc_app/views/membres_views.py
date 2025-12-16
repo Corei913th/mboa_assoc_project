@@ -30,7 +30,7 @@ def liste_membres_view(request, association_id):
         )
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     # Récupérer tous les membres avec leurs adhésions
     membres = Membre.objects.filter(
@@ -72,7 +72,7 @@ def inviter_membres_view(request, association_id):
             return redirect('liste_membres', association_id=association_id)
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     if request.method == 'POST':
         telephone = request.POST.get('telephone', '').strip()
@@ -126,12 +126,12 @@ def accepter_invitation_view(request, code):
     # Vérifier que l'invitation est destinée à cet utilisateur
     if request.user.telephone != invitation.telephone_invite:
         messages.error(request, "Cette invitation ne vous est pas destinée")
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     # Vérifier si l'invitation est toujours valide
     if not invitation.est_valide():
         messages.error(request, "Cette invitation a expiré ou a déjà été traitée")
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -153,7 +153,7 @@ def accepter_invitation_view(request, code):
             success, message = InvitationService.refuser_invitation(code, request.user)
             if success:
                 messages.success(request, message)
-                return redirect('dashboard')
+                return redirect('mboa_assoc_app:dashboard')
             else:
                 messages.error(request, message)
     
@@ -287,7 +287,7 @@ def detail_membre_view(request, association_id, membre_id):
         )
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     # Récupérer l'adhésion du membre
     try:

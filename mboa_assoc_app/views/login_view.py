@@ -28,7 +28,7 @@ def login_view(request):
     """
     # Rediriger si déjà connecté
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('mboa_assoc_app:dashboard')
     
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -56,7 +56,7 @@ def login_view(request):
                 )
                 
                 # Rediriger vers la page demandée ou le dashboard
-                next_url = request.GET.get('next', 'dashboard')
+                next_url = request.GET.get('next', 'mboa_assoc_app:dashboard')
                 return redirect(next_url)
             else:
                 # Identifiants invalides (Requirement 4.3)

@@ -52,7 +52,7 @@ def verify_otp_view(request):
             "Session expirée. Veuillez recommencer l'inscription."
         )
         logger.warning("Tentative d'accès à verify_otp sans téléphone en session")
-        return redirect('register')
+        return redirect('mboa_assoc_app:register')
     
     # Vérifier si le téléphone est bloqué (Requirement 3.3)
     if SecurityService.check_phone_blocked(telephone):
@@ -113,7 +113,7 @@ def verify_otp_view(request):
                         
                         if not password:
                             messages.error(request, "Session expirée. Veuillez recommencer l'inscription.")
-                            return redirect('register')
+                            return redirect('mboa_assoc_app:register')
                         
                         # Créer le membre - username = téléphone normalisé
                         membre = Membre.objects.create_user(
@@ -151,7 +151,7 @@ def verify_otp_view(request):
                     )
                     
                     # Rediriger vers la page de profil pour compléter les informations
-                    return redirect('profile')
+                    return redirect('mboa_assoc_app:profile')
                     
                 except Exception as e:
                     logger.error(f"Erreur lors de la création du compte pour {telephone}: {e}")
