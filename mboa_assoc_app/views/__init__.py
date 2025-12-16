@@ -22,6 +22,18 @@ from .association_views import (
     delete_association,
     my_associations
 )
+from .cotisation_views import (
+    liste_cotisations_view,
+    creer_cotisation_view
+)
+from .paiement_views import (
+    effectuer_paiement_view,
+    historique_paiements_view
+)
+from .association_dashboard_view import (
+    association_dashboard_view,
+    export_membres_csv_view
+)
 
 __all__ = [
     'landing_view', 
@@ -41,5 +53,11 @@ __all__ = [
     'nominate_treasurer',
     'archive_association',
     'delete_association',
-    'my_associations'
+    'my_associations',
+    'liste_cotisations_view',
+    'creer_cotisation_view',
+    'effectuer_paiement_view',
+    'historique_paiements_view',
+    'association_dashboard_view',
+    'export_membres_csv_view'
 ]

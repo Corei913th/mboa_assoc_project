@@ -1,0 +1,163 @@
+{% extends 'base_with_sidebar.html' %}
+
+{% block title %}Dashboard - {{ association.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <!-- En-tête -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold mb-2">{{ association.name }}</h1>
+    <p class="text-muted">{{ association.get_type_display }}</p>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <!-- Membres -->
+    <div class="card">
+      <div class="card-body">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+            <i class="fa-solid fa-users text-2xl text-primary"></i>
+          </div>
+          <div>
+            <div class="text-3xl font-bold">{{ total_membres }}</div>
+            <div class="text-sm text-muted">Membres actifs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collecte du mois -->
+    <div class="card">
+      <div class="card-body">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
+            <i class="fa-solid fa-coins text-2xl text-success"></i>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-success">{{ montant_collecte_mois|floatformat:0 }}</div>
+            <div class="text-sm text-muted">FCFA collectés ce mois</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prochaine échéance -->
+    <div class="card">
+      <div class="card-body">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
+            <i class="fa-solid fa-calendar text-2xl text-warning"></i>
+          </div>
+          <div>
+            {% if prochaine_cotisation %}
+            <div class="text-2xl font-bold">{{ prochaine_cotisation.date_echeance|timeuntil }}</div>
+            <div class="text-sm text-muted">Prochaine échéance</div>
+            {% else %}
+            <div class="text-lg text-muted">Aucune cotisation</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions rapides -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <!-- Derniers paiements -->
+    <div class="card">
+      <div class="card-header">
+        <div class="flex-between">
+          <h2 class="text-xl font-bold">Derniers paiements</h2>
+          <a href="{% url 'mboa_assoc_app:historique_paiements' association.id %}" class="btn btn-sm btn-secondary">
+            Voir tout
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if derniers_paiements %}
+        <div class="space-y-3">
+          {% for paiement in derniers_paiements %}
+          <div class="flex-between p-3 bg-muted/5 rounded-lg">
+            <div>
+              <div class="font-medium">{{ paiement.membre.get_full_name|default:paiement.membre.username }}</div>
+              <div class="text-sm text-muted">{{ paiement.cotisation.type_cotisation }}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-success">{{ paiement.montant|floatformat:0 }} FCFA</div>
+              <div class="text-xs text-muted">{{ paiement.date_paiement|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-muted py-4">Aucun paiement</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Membres récents -->
+    <div class="card">
+      <div class="card-header">
+        <div class="flex-between">
+          <h2 class="text-xl font-bold">Membres récents</h2>
+          <a href="{% url 'mboa_assoc_app:liste_membres' association.id %}" class="btn btn-sm btn-secondary">
+            Voir tout
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if membres_recents %}
+        <div class="space-y-3">
+          {% for adhesion in membres_recents %}
+          <div class="flex-between p-3 bg-muted/5 rounded-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <i class="fa-solid fa-user text-primary"></i>
+              </div>
+              <div>
+                <div class="font-medium">{{ adhesion.membre.get_full_name|default:adhesion.membre.username }}</div>
+                <div class="text-sm text-muted">{{ adhesion.get_role_display }}</div>
+              </div>
+            </div>
+            <div class="text-xs text-muted">{{ adhesion.date|date:"d/m/Y" }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-muted py-4">Aucun membre</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="text-xl font-bold">Actions rapides</h2>
+    </div>
+    <div class="card-body">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="{% url 'mboa_assoc_app:liste_cotisations' association.id %}" class="btn btn-outline">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          Cotisations
+        </a>
+        <a href="{% url 'mboa_assoc_app:liste_membres' association.id %}" class="btn btn-outline">
+          <i class="fa-solid fa-users"></i>
+          Membres
+        </a>
+        {% if adhesion.role in 'PRESIDENT,TRESORIER' %}
+        <a href="{% url 'mboa_assoc_app:inviter_membres' association.id %}" class="btn btn-outline">
+          <i class="fa-solid fa-user-plus"></i>
+          Inviter
+        </a>
+        <a href="{% url 'mboa_assoc_app:export_membres_csv' association.id %}" class="btn btn-outline">
+          <i class="fa-solid fa-download"></i>
+          Export CSV
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

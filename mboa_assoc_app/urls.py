@@ -19,7 +19,13 @@ from .views import (
     nominate_treasurer,
     archive_association,
     delete_association,
-    my_associations
+    my_associations,
+    liste_cotisations_view,
+    creer_cotisation_view,
+    effectuer_paiement_view,
+    historique_paiements_view,
+    association_dashboard_view,
+    export_membres_csv_view
 )
 
 from .views.membres_views import (
@@ -75,4 +81,16 @@ urlpatterns = [
     # Actions sur l'association
     path('association/<int:id>/archiver/', archive_association, name='archive_association'),
     path('association/<int:id>/supprimer/', delete_association, name='delete_association'),
+    
+    # Dashboard association
+    path('association/<int:association_id>/dashboard/', association_dashboard_view, name='association_dashboard'),
+    path('association/<int:association_id>/export-membres/', export_membres_csv_view, name='export_membres_csv'),
+    
+    # Cotisations
+    path('association/<int:association_id>/cotisations/', liste_cotisations_view, name='liste_cotisations'),
+    path('association/<int:association_id>/cotisations/creer/', creer_cotisation_view, name='creer_cotisation'),
+    
+    # Paiements
+    path('cotisation/<int:cotisation_id>/payer/', effectuer_paiement_view, name='effectuer_paiement'),
+    path('association/<int:association_id>/paiements/', historique_paiements_view, name='historique_paiements'),
 ]

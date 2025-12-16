@@ -1,1 +1,81 @@
-<!-- Liste des cotisations -->
+{% extends 'base_with_sidebar.html' %}
+
+{% block title %}Cotisations - {{ association.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="card">
+    <div class="card-header">
+      <div class="flex-between">
+        <div>
+          <h1 class="text-2xl font-bold">Cotisations</h1>
+          <p class="text-muted">{{ association.name }}</p>
+        </div>
+        {% if can_create %}
+        <a href="{% url 'mboa_assoc_app:creer_cotisation' association.id %}" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i>
+          Nouvelle cotisation
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card-body">
+      {% if cotisations %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for cotisation in cotisations %}
+        <div class="card border">
+          <div class="card-body">
+            <div class="flex-between mb-3">
+              <h3 class="font-bold text-lg">{{ cotisation.type_cotisation }}</h3>
+              {% if cotisation.date_paiement %}
+              <span class="badge badge-success">Payée</span>
+              {% elif cotisation.date_echeance < today %} <span class="badge badge-error">Échue</span>
+                {% else %}
+                <span class="badge badge-warning">En attente</span>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 mb-4">
+              <div class="flex-between text-sm">
+                <span class="text-muted">Montant:</span>
+                <span class="font-bold text-lg">{{ cotisation.montant|floatformat:0 }} FCFA</span>
+              </div>
+              <div class="flex-between text-sm">
+                <span class="text-muted">Échéance:</span>
+                <span>{{ cotisation.date_echeance|date:"d/m/Y" }}</span>
+              </div>
+              {% if cotisation.date_paiement %}
+              <div class="flex-between text-sm">
+                <span class="text-muted">Payée le:</span>
+                <span>{{ cotisation.date_paiement|date:"d/m/Y" }}</span>
+              </div>
+              {% endif %}
+            </div>
+
+            {% if not cotisation.date_paiement %}
+            <a href="{% url 'mboa_assoc_app:effectuer_paiement' cotisation.id %}" class="btn btn-primary btn-sm w-full">
+              <i class="fa-solid fa-credit-card"></i>
+              Payer maintenant
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-12">
+        <i class="fa-solid fa-money-bill-wave text-6xl text-muted mb-4"></i>
+        <p class="text-muted mb-4">Aucune cotisation créée</p>
+        {% if can_create %}
+        <a href="{% url 'mboa_assoc_app:creer_cotisation' association.id %}" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i>
+          Créer la première cotisation
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
