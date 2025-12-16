@@ -1,0 +1,115 @@
+{% extends 'associations/base_association.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <!-- En-tête -->
+    <div class="d-flex justify-between align-center" style="margin-bottom: 32px;">
+        <div>
+            <h1 class="page-title">Mes associations</h1>
+            <p class="text-muted">Vous êtes membre de {{ associations.count }} association{{ associations.count|pluralize }}</p>
+        </div>
+        <a href="{% url 'associations:create_association' %}" class="btn btn-primary">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Créer une association
+        </a>
+    </div>
+    
+    <!-- Liste des associations -->
+    {% if associations %}
+    <div class="grid grid-3">
+        {% for association in associations %}
+        <a href="{% url 'associations:association_detail' association.id %}" style="text-decoration: none; color: inherit;">
+            <div class="card" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div style="margin-bottom: 16px;">
+                        {% if association.logo %}
+                            <img src="{{ association.logo.url }}" alt="Logo {{ association.name }}" class="association-logo-sm">
+                        {% else %}
+                            <div class="association-logo-sm" style="background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 600;">
+                                {{ association.name|slice:":2"|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Nom et type -->
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 8px;">
+                        {{ association.name }}
+                    </h3>
+                    <div style="margin-bottom: 12px;">
+                        <span class="badge badge-primary" style="font-size: 0.75rem;">
+                            {{ association.get_type_display }}
+                        </span>
+                        {% if association.is_archived %}
+                            <span class="badge badge-warning" style="font-size: 0.75rem;">Archivée</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Rôle de l'utilisateur -->
+                    {% with association.members.all|first as member %}
+                        {% if member.role == 'president' %}
+                            <span class="badge" style="background-color: var(--primary-light); color: var(--primary-color);">
+                                Vous êtes président
+                            </span>
+                        {% elif member.role == 'treasurer' %}
+                            <span class="badge" style="background-color: var(--success-light); color: var(--success-color);">
+                                Vous êtes trésorier
+                            </span>
+                        {% else %}
+                            <span class="badge" style="background-color: var(--bg-tertiary); color: var(--text-secondary);">
+                                Membre
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Statistiques rapides -->
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                        <div class="d-flex justify-between" style="font-size: 0.875rem; color: var(--text-secondary);">
+                            <span>{{ association.get_member_count }} membre{{ association.get_member_count|pluralize }}</span>
+                            <span>{{ association.created_at|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Aucune association -->
+    <div class="card">
+        <div class="card-body" style="text-align: center; padding: 64px 24px;">
+            <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 24px; color: var(--text-muted);">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
+            </svg>
+            
+            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 12px;">
+                Aucune association
+            </h2>
+            <p class="text-muted" style="margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                Vous n'êtes membre d'aucune association pour le moment. Créez votre première association ou attendez d'être invité à rejoindre une association existante.
+            </p>
+            
+            <a href="{% url 'associations:create_association' %}" class="btn btn-primary btn-lg">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Créer ma première association
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Effet hover sur les cartes d'association */
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+</style>
+{% endblock %}

@@ -76,21 +76,26 @@ FIX_LOGIN_TELEPHONE.md
 GUIDE_RAPIDE_LOGS.md
 IMPLEMENTATION_GUIDE_SHADCN.md
 IMPLEMENTATION_SHADCN_DESIGN.md
+INTEGRATION_TAILWIND_FONTAWESOME.md
+INTEGRATION_TAILWIND_MEMBRES.md
 LANDING_PAGE_INFO.md
 MANUAL_TESTING_README.md
 PROFILE_OPTIMIZATION_SUMMARY.md
 QUICK_START_TESTING.md
 RESUME_FINAL_OTP.md
+TAILWIND_SETUP.md
 TESTING_SUMMARY.md
 TEST_CHECKLIST.md
 TEST_LOGIN_RAPIDE.md
 TEST_OTP_PRODUCTION.md
+THEME_COLORS.md
 mboa_assoc_app/manual_testing_guide.md
 
 # ============================================
 # Scripts de test et utilitaires (à exclure)
 # ============================================
 add_icon_colors.py
+apply_theme_colors.py
 replace_icons.py
 replace_images.py
 check_system.py
@@ -98,7 +103,6 @@ test_phone_auth.py
 test_sms_mode.py
 test_ui.html
 mboa_assoc_app/manual_testing_helper.py
-mboa_assoc_app/verify_system_ready.py
 mboa_assoc_app/verify_system_ready.py
 test_phone_auth.py
 
