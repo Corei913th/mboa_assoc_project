@@ -25,7 +25,10 @@ from .views.membres_views import (
 urlpatterns = [
     path("__reload__/", include("django_browser_reload.urls")),
 
-    # Dashboard
+
+    path('', landing_view, name='landing'),
+
+    # Dashboard (page d'accueil pour utilisateurs connectés)
     path('dashboard/', dashboard_view, name='dashboard'),
     
     # Authentication URLs

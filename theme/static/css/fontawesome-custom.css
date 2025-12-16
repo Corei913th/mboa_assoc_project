@@ -1,0 +1,77 @@
+/*!
+ * Font Awesome Free 7.1.0 - Custom build for Django
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+
+/* Font Awesome Solid */
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../webfonts/fa-solid-900.woff2") format("woff2");
+}
+
+/* Font Awesome Regular */
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../webfonts/fa-regular-400.woff2") format("woff2");
+}
+
+/* Font Awesome Brands */
+@font-face {
+  font-family: "Font Awesome 7 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../webfonts/fa-brands-400.woff2") format("woff2");
+}
+
+/* Base styles */
+.fa, .fa-brands, .fa-classic, .fa-regular, .fa-solid, .fab, .far, .fas {
+  --_fa-family: var(--fa-family, var(--fa-style-family, "Font Awesome 7 Free"));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: var(--fa-display, inline-block);
+  font-family: var(--_fa-family);
+  font-feature-settings: normal;
+  font-style: normal;
+  font-synthesis: none;
+  font-variant: normal;
+  font-weight: var(--fa-style, 900);
+  line-height: 1;
+  text-align: center;
+  text-rendering: auto;
+  width: var(--fa-width, 1.25em);
+}
+
+:is(.fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands, .fa-classic, .fa):before {
+  content: var(--fa) / "";
+}
+
+@supports not (content: "" / "") {
+  :is(.fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands, .fa-classic, .fa):before {
+    content: var(--fa);
+  }
+}
+
+/* Solid icons */
+.fas, .fa-solid {
+  font-family: "Font Awesome 7 Free";
+  font-weight: 900;
+}
+
+/* Regular icons */
+.far, .fa-regular {
+  font-family: "Font Awesome 7 Free";
+  font-weight: 400;
+}
+
+/* Brand icons */
+.fab, .fa-brands {
+  font-family: "Font Awesome 7 Brands";
+  font-weight: 400;
+}

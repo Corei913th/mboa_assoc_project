@@ -33,7 +33,7 @@ module.exports = {
         /* JS 1: Ignore any JavaScript in node_modules folder. */
         // '!../../**/node_modules',
         /* JS 2: Process all JavaScript files in the project. */
-        // '../../**/*.js',
+        '../../**/static/js/**/*.js',
 
         /**
          * Python: If you use Tailwind CSS classes in Python, uncomment the following line
@@ -42,7 +42,72 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                // Couleurs principales (depuis style.css)
+                primary: {
+                    DEFAULT: 'rgb(16 185 129)', // Vert émeraude
+                    foreground: 'rgb(255 255 255)',
+                },
+                secondary: {
+                    DEFAULT: 'rgb(245 158 11)', // Orange ambré
+                    foreground: 'rgb(255 255 255)',
+                },
+                accent: {
+                    DEFAULT: 'rgb(59 130 246)', // Bleu
+                    foreground: 'rgb(255 255 255)',
+                },
+                // Couleurs de statut
+                success: {
+                    DEFAULT: 'rgb(34 197 94)',
+                    light: 'rgb(220 252 231)',
+                },
+                warning: {
+                    DEFAULT: 'rgb(251 191 36)',
+                    light: 'rgb(254 249 195)',
+                },
+                error: {
+                    DEFAULT: 'rgb(239 68 68)',
+                    light: 'rgb(254 226 226)',
+                },
+                info: {
+                    DEFAULT: 'rgb(96 165 250)',
+                    light: 'rgb(219 234 254)',
+                },
+                // Couleurs neutres
+                background: 'rgb(250 250 250)',
+                foreground: 'rgb(15 23 42)',
+                card: {
+                    DEFAULT: 'rgb(255 255 255)',
+                    foreground: 'rgb(15 23 42)',
+                },
+                muted: {
+                    DEFAULT: 'rgb(248 250 252)',
+                    foreground: 'rgb(100 116 139)',
+                },
+                border: 'rgb(226 232 240)',
+                input: 'rgb(226 232 240)',
+                ring: 'rgb(16 185 129)',
+            },
+            spacing: {
+                'touch': '44px', // Touch-friendly
+            },
+            animation: {
+                'float': 'float 3s ease-in-out infinite',
+                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'slide-up': 'slideUp 0.5s ease-out',
+            },
+            keyframes: {
+                float: {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-10px)' },
+                },
+                slideUp: {
+                    '0%': { transform: 'translateY(20px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                }
+            }
+        },
     },
     plugins: [
         /**
