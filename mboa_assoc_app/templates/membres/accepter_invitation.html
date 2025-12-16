@@ -11,28 +11,27 @@
         <div class="invitation-icon">
             <i class="fa-solid fa-envelope-open-text"></i>
         </div>
-        
+
         <!-- Titre -->
         <h1 class="heading-2 mb-sm">Vous avez été invité !</h1>
         <p class="text-lg text-muted mb-md">
             {{ invitation.createur.get_full_name }} vous invite à rejoindre une association
         </p>
-        
+
         <!-- Association -->
         <div class="mb-lg">
             {% if invitation.association.logo_url %}
-            <img src="{{ invitation.association.logo_url }}" 
-                 alt="{{ invitation.association.nom }}"
-                 class="association-logo-large">
+            <img src="{{ invitation.association.logo_url }}" alt="{{ invitation.association.nom }}"
+                class="association-logo-large">
             {% else %}
             <div class="association-logo-large flex-center bg-primary text-white">
                 <i class="fa-solid fa-building text-3xl"></i>
             </div>
             {% endif %}
-            
+
             <h2 class="text-2xl font-bold mt-md">{{ invitation.association.nom }}</h2>
             <p class="text-muted">{{ invitation.association.description|truncatechars:100 }}</p>
-            
+
             <div class="inline-flex items-center gap-sm mt-sm px-4 py-2 bg-primary-lightest rounded-full">
                 <i class="fa-solid fa-users text-primary"></i>
                 <span class="text-sm font-semibold">
@@ -40,24 +39,24 @@
                 </span>
             </div>
         </div>
-        
+
         <!-- Détails de l'invitation -->
         <div class="invitation-details">
             <div class="detail-item">
                 <span class="detail-label">Code d'invitation :</span>
                 <span class="detail-value font-mono font-bold">{{ invitation.code }}</span>
             </div>
-            
+
             <div class="detail-item">
                 <span class="detail-label">Invitée par :</span>
                 <span class="detail-value">{{ invitation.createur.get_full_name }}</span>
             </div>
-            
+
             <div class="detail-item">
                 <span class="detail-label">Date d'envoi :</span>
                 <span class="detail-value">{{ invitation.date_creation|date:"d/m/Y à H:i" }}</span>
             </div>
-            
+
             <div class="detail-item">
                 <span class="detail-label">Expire le :</span>
                 <span class="detail-value {% if not invitation.est_valide %}text-error{% endif %}">
@@ -68,7 +67,7 @@
                 </span>
             </div>
         </div>
-        
+
         <!-- Actions -->
         <div class="action-buttons">
             {% if invitation.est_valide %}
@@ -80,7 +79,7 @@
                     Refuser
                 </button>
             </form>
-            
+
             <form method="POST" action="{% url 'accepter_invitation' invitation.code %}" class="flex-1">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="accepter">
@@ -94,17 +93,18 @@
                 <div class="p-md bg-error-light border border-error rounded-lg mb-md">
                     <i class="fa-solid fa-clock text-error text-xl mb-sm"></i>
                     <p class="font-semibold">Cette invitation a expiré</p>
-                    <p class="text-sm text-muted">Contactez {{ invitation.createur.get_full_name }} pour une nouvelle invitation</p>
+                    <p class="text-sm text-muted">Contactez {{ invitation.createur.get_full_name }} pour une nouvelle
+                        invitation</p>
                 </div>
-                
-                <a href="{% url 'dashboard' %}" class="btn btn-primary">
+
+                <a href="{% url 'mboa_assoc_app:dashboard' %}" class="btn btn-primary">
                     <i class="fa-solid fa-arrow-left"></i>
                     Retour au tableau de bord
                 </a>
             </div>
             {% endif %}
         </div>
-        
+
         <!-- Avertissement -->
         <div class="mt-md text-sm text-muted">
             <p>

@@ -29,7 +29,7 @@
     <aside class="sidebar" id="sidebar">
       <!-- Header -->
       <div class="sidebar-header">
-        <a href="{% url 'dashboard' %}" class="sidebar-brand">
+        <a href="{% url 'mboa_assoc_app:dashboard' %}" class="sidebar-brand">
           <i class="fa-solid fa-building sidebar-nav-icon icon-primary"></i>
           Mboa Assoc
         </a>
@@ -37,13 +37,13 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <a href="{% url 'dashboard' %}"
+        <a href="{% url 'mboa_assoc_app:dashboard' %}"
           class="sidebar-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
           <i class="fa-solid fa-house sidebar-nav-icon icon-primary"></i>
           Tableau de bord
         </a>
 
-        <a href="{% url 'profile' %}"
+        <a href="{% url 'mboa_assoc_app:profile' %}"
           class="sidebar-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
           <i class="fa-solid fa-user sidebar-nav-icon icon-primary"></i>
           Mon Profil
@@ -74,7 +74,7 @@
 
       <!-- Footer -->
       <div class="sidebar-footer">
-        <a href="{% url 'logout' %}" class="btn btn-secondary btn-full">
+        <a href="{% url 'mboa_assoc_app:logout' %}" class="btn btn-secondary btn-full">
           <i class="fa-solid fa-right-from-bracket sidebar-nav-icon icon-primary"></i>
           Déconnexion
         </a>

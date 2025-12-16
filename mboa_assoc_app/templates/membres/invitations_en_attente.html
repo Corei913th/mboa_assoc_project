@@ -9,156 +9,154 @@
     <!-- Header -->
 
     <div class="dashboard-header">
-      <div>
-        <h1 class="heading-2 mb-sm">
-          Mes invitations
-        </h1>
-        <p class="text-muted">Acceptez ou refusez les invitations à rejoindre des associations</p>
-      </div>
+        <div>
+            <h1 class="heading-2 mb-sm">
+                Mes invitations
+            </h1>
+            <p class="text-muted">Acceptez ou refusez les invitations à rejoindre des associations</p>
+        </div>
     </div>
 
     <!-- Alertes d'expiration -->
     {% for invitation in invitations %}
-        {% if invitation.jours_restants <= 1 and invitation.est_valide %}
-        <div class="expiration-warning mb-md">
-            <div class="flex items-center gap-sm">
-                <i class="fa-solid fa-clock text-warning text-xl"></i>
-                <div>
-                    <h3 class="font-semibold">Invitation bientôt expirée !</h3>
-                    <p class="text-sm">
-                        L'invitation pour <strong>{{ invitation.association.nom }}</strong> 
-                        expire dans moins de 24 heures.
-                    </p>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    {% endfor %}
-
-    <!-- Liste des invitations -->
-    {% if invitations %}
-    <div class="space-y-md">
-        {% for invitation in invitations %}
-        <div class="invitation-item {% if invitation.jours_restants <= 1 %}expiring{% endif %} {% if not invitation.est_valide %}expired{% endif %}">
-            <!-- En-tête de l'association -->
-            <div class="association-preview">
-                {% if invitation.association.logo_url %}
-                <img src="{{ invitation.association.logo_url }}" 
-                     alt="{{ invitation.association.nom }}"
-                     class="association-avatar">
-                {% else %}
-                <div class="association-avatar flex-center bg-primary text-white">
-                    <i class="fa-solid fa-building text-xl"></i>
-                </div>
-                {% endif %}
-                
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold">{{ invitation.association.nom }}</h3>
-                    <p class="text-sm text-muted">
-                        Invité par {{ invitation.createur.get_full_name }}
-                    </p>
-                    <p class="text-xs text-muted">
-                        Le {{ invitation.date_creation|date:"d/m/Y à H:i" }}
-                    </p>
-                </div>
-                
-                {% if invitation.est_valide %}
-                <a href="{% url 'accepter_invitation' invitation.code %}" 
-                   class="btn btn-primary">
-                    <i class="fa-solid fa-envelope-open"></i>
-                    Voir l'invitation
-                </a>
-                {% else %}
-                <span class="badge badge-error">
-                    <i class="fa-solid fa-clock"></i>
-                    Expirée
-                </span>
-                {% endif %}
-            </div>
-            
-            <!-- Détails -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-md text-sm">
-                <div>
-                    <p class="text-muted mb-sm">Description</p>
-                    <p>{{ invitation.association.description|truncatechars:100|default:"Aucune description" }}</p>
-                </div>
-                
-                <div>
-                    <p class="text-muted mb-sm">Statut</p>
-                    <div class="flex items-center gap-sm">
-                        {% if invitation.est_valide %}
-                        <span class="badge badge-success">
-                            <i class="fa-solid fa-clock"></i>
-                            En attente
-                        </span>
-                        <span class="text-sm">
-                            Expire dans {{ invitation.jours_restants }} jour(s)
-                        </span>
-                        {% else %}
-                        <span class="badge badge-error">
-                            <i class="fa-solid fa-ban"></i>
-                            Expirée
-                        </span>
-                        <span class="text-sm">
-                            Depuis {{ invitation.date_expiration|timesince }}
-                        </span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Code d'invitation -->
-            <div class="mt-md pt-md border-t border-border-color">
+    {% if invitation.jours_restants <= 1 and invitation.est_valide %} <div class="expiration-warning mb-md">
+        <div class="flex items-center gap-sm">
+            <i class="fa-solid fa-clock text-warning text-xl"></i>
+            <div>
+                <h3 class="font-semibold">Invitation bientôt expirée !</h3>
                 <p class="text-sm">
-                    <strong>Code d'invitation :</strong>
-                    <code class="ml-sm px-sm py-xs bg-gray-100 rounded font-mono">{{ invitation.code }}</code>
+                    L'invitation pour <strong>{{ invitation.association.nom }}</strong>
+                    expire dans moins de 24 heures.
                 </p>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <!-- État vide -->
-    <div class="empty-state">
-        <div class="empty-state-icon">
-            <i class="fa-solid fa-envelope-open"></i>
-        </div>
-        <h3 class="text-xl font-semibold mb-sm">Aucune invitation en attente</h3>
-        <p class="text-muted mb-md">
-            Vous n'avez pas d'invitation en attente.
-            Lorsque quelqu'un vous invitera à rejoindre une association, 
-            l'invitation apparaîtra ici.
-        </p>
-        <a href="{% url 'dashboard' %}" class="btn btn-primary">
-            <i class="fa-solid fa-arrow-left"></i>
-            Retour au tableau de bord
-        </a>
-    </div>
-    {% endif %}
+</div>
+{% endif %}
+{% endfor %}
 
-    <!-- Informations -->
-    <div class="info-box mt-lg">
-        <h3 class="font-semibold mb-sm flex items-center gap-sm">
-            <i class="fa-solid fa-info-circle"></i>
-            À propos des invitations
-        </h3>
-        <ul class="list-disc pl-5 space-y-1 text-sm">
-            <li>Chaque invitation est valide pendant 7 jours</li>
-            <li>Vous devez accepter l'invitation avant son expiration</li>
-            <li>En acceptant, vous deviendrez membre de l'association</li>
-            <li>Vous pouvez refuser une invitation si vous ne souhaitez pas rejoindre</li>
-            <li>Une fois expirée, vous ne pouvez plus accepter l'invitation</li>
-        </ul>
+<!-- Liste des invitations -->
+{% if invitations %}
+<div class="space-y-md">
+    {% for invitation in invitations %}
+    <div
+        class="invitation-item {% if invitation.jours_restants <= 1 %}expiring{% endif %} {% if not invitation.est_valide %}expired{% endif %}">
+        <!-- En-tête de l'association -->
+        <div class="association-preview">
+            {% if invitation.association.logo_url %}
+            <img src="{{ invitation.association.logo_url }}" alt="{{ invitation.association.nom }}"
+                class="association-avatar">
+            {% else %}
+            <div class="association-avatar flex-center bg-primary text-white">
+                <i class="fa-solid fa-building text-xl"></i>
+            </div>
+            {% endif %}
+
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold">{{ invitation.association.nom }}</h3>
+                <p class="text-sm text-muted">
+                    Invité par {{ invitation.createur.get_full_name }}
+                </p>
+                <p class="text-xs text-muted">
+                    Le {{ invitation.date_creation|date:"d/m/Y à H:i" }}
+                </p>
+            </div>
+
+            {% if invitation.est_valide %}
+            <a href="{% url 'accepter_invitation' invitation.code %}" class="btn btn-primary">
+                <i class="fa-solid fa-envelope-open"></i>
+                Voir l'invitation
+            </a>
+            {% else %}
+            <span class="badge badge-error">
+                <i class="fa-solid fa-clock"></i>
+                Expirée
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Détails -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md text-sm">
+            <div>
+                <p class="text-muted mb-sm">Description</p>
+                <p>{{ invitation.association.description|truncatechars:100|default:"Aucune description" }}</p>
+            </div>
+
+            <div>
+                <p class="text-muted mb-sm">Statut</p>
+                <div class="flex items-center gap-sm">
+                    {% if invitation.est_valide %}
+                    <span class="badge badge-success">
+                        <i class="fa-solid fa-clock"></i>
+                        En attente
+                    </span>
+                    <span class="text-sm">
+                        Expire dans {{ invitation.jours_restants }} jour(s)
+                    </span>
+                    {% else %}
+                    <span class="badge badge-error">
+                        <i class="fa-solid fa-ban"></i>
+                        Expirée
+                    </span>
+                    <span class="text-sm">
+                        Depuis {{ invitation.date_expiration|timesince }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Code d'invitation -->
+        <div class="mt-md pt-md border-t border-border-color">
+            <p class="text-sm">
+                <strong>Code d'invitation :</strong>
+                <code class="ml-sm px-sm py-xs bg-gray-100 rounded font-mono">{{ invitation.code }}</code>
+            </p>
+        </div>
     </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- État vide -->
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i class="fa-solid fa-envelope-open"></i>
+    </div>
+    <h3 class="text-xl font-semibold mb-sm">Aucune invitation en attente</h3>
+    <p class="text-muted mb-md">
+        Vous n'avez pas d'invitation en attente.
+        Lorsque quelqu'un vous invitera à rejoindre une association,
+        l'invitation apparaîtra ici.
+    </p>
+    <a href="{% url 'mboa_assoc_app:dashboard' %}" class="btn btn-primary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Retour au tableau de bord
+    </a>
+</div>
+{% endif %}
+
+<!-- Informations -->
+<div class="info-box mt-lg">
+    <h3 class="font-semibold mb-sm flex items-center gap-sm">
+        <i class="fa-solid fa-info-circle"></i>
+        À propos des invitations
+    </h3>
+    <ul class="list-disc pl-5 space-y-1 text-sm">
+        <li>Chaque invitation est valide pendant 7 jours</li>
+        <li>Vous devez accepter l'invitation avant son expiration</li>
+        <li>En acceptant, vous deviendrez membre de l'association</li>
+        <li>Vous pouvez refuser une invitation si vous ne souhaitez pas rejoindre</li>
+        <li>Une fois expirée, vous ne pouvez plus accepter l'invitation</li>
+    </ul>
+</div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Calculer les jours restants côté client
-document.addEventListener('DOMContentLoaded', function() {
-    // Cette fonction pourrait être étendue pour ajouter un compte à rebours
-    console.log('Page invitations chargée');
-});
+    // Calculer les jours restants côté client
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cette fonction pourrait être étendue pour ajouter un compte à rebours
+        console.log('Page invitations chargée');
+    });
 </script>
 {% endblock %}
