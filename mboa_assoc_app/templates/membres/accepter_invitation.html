@@ -71,7 +71,7 @@
         <!-- Actions -->
         <div class="action-buttons">
             {% if invitation.est_valide %}
-            <form method="POST" action="{% url 'accepter_invitation' invitation.code %}" class="flex-1">
+            <form method="POST" action="{% url 'mboa_assoc_app:accepter_invitation' invitation.code %}" class="flex-1">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="refuser">
                 <button type="submit" class="btn btn-error btn-lg w-full">
@@ -80,7 +80,7 @@
                 </button>
             </form>
 
-            <form method="POST" action="{% url 'accepter_invitation' invitation.code %}" class="flex-1">
+            <form method="POST" action="{% url 'mboa_assoc_app:accepter_invitation' invitation.code %}" class="flex-1">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="accepter">
                 <button type="submit" class="btn btn-primary btn-lg w-full">

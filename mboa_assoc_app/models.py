@@ -6,6 +6,7 @@ Gère les membres, cotisations, paiements Mobile Money et abonnements.
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MinLengthValidator
+from django.utils import timezone
 from decimal import Decimal
 from PIL import Image
 import os
@@ -225,7 +226,7 @@ class Association(models.Model):
         verbose_name="Créé par"
     )
     created_at = models.DateTimeField(
-        auto_now_add=True,
+        default=timezone.now,
         verbose_name="Créé le"
     )
     updated_at = models.DateTimeField(

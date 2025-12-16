@@ -12,9 +12,9 @@
             <h1 class="heading-2 mb-sm">Inviter des membres</h1>
             <p class="text-muted">{{ association.nom }}</p>
         </div>
-        
+
         <div>
-            <a href="{% url 'liste_membres' association.id %}" class="btn btn-secondary">
+            <a href="{% url 'mboa_assoc_app:liste_membres' association.id %}" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i>
                 Retour aux membres
             </a>
@@ -24,23 +24,18 @@
     <!-- Formulaire d'invitation -->
     <div class="invitation-card mb-lg">
         <h2 class="text-xl font-semibold mb-md">Inviter par numéro de téléphone</h2>
-        
-        <form method="POST" action="{% url 'inviter_membres' association.id %}">
+
+        <form method="POST" action="{% url 'mboa_assoc_app:inviter_membres' association.id %}">
             {% csrf_token %}
-            
+
             <div class="mb-md">
                 <label for="telephone" class="block text-sm font-medium mb-sm">
                     Numéro de téléphone
                 </label>
                 <div class="telephone-input-group">
-                    <input type="tel" 
-                           id="telephone" 
-                           name="telephone" 
-                           placeholder="+237 6XX XX XX XX" 
-                           class="input telephone-input"
-                           required
-                           pattern="^\+237[0-9]{9}$"
-                           title="Format: +237 suivi de 9 chiffres">
+                    <input type="tel" id="telephone" name="telephone" placeholder="+237 6XX XX XX XX"
+                        class="input telephone-input" required pattern="^\+237[0-9]{9}$"
+                        title="Format: +237 suivi de 9 chiffres">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa-solid fa-paper-plane"></i>
                         Envoyer l'invitation
@@ -51,16 +46,15 @@
                 </p>
             </div>
         </form>
-        
+
         <!-- Invitations multiples (future feature) -->
         <div class="border-t pt-md mt-md">
             <h3 class="text-lg font-semibold mb-sm">Invitations multiples</h3>
             <p class="text-muted mb-md">
                 (Fonctionnalité à venir : importer une liste de numéros)
             </p>
-            <textarea class="input w-full h-32" 
-                      placeholder="Collez une liste de numéros (un par ligne)..."
-                      disabled></textarea>
+            <textarea class="input w-full h-32" placeholder="Collez une liste de numéros (un par ligne)..."
+                disabled></textarea>
             <button class="btn btn-outline mt-sm" disabled>
                 <i class="fa-solid fa-upload"></i>
                 Inviter plusieurs membres
@@ -71,7 +65,7 @@
     <!-- Invitations en attente -->
     <div>
         <h2 class="text-xl font-semibold mb-md">Invitations envoyées</h2>
-        
+
         {% if invitations_en_attente %}
         <div class="invitations-list">
             {% for invitation in invitations_en_attente %}
@@ -80,11 +74,11 @@
                     <div>
                         <h3 class="font-semibold">{{ invitation.telephone_invite }}</h3>
                         <p class="text-sm text-muted">
-                            Invité par {{ invitation.createur.get_full_name }} le 
+                            Invité par {{ invitation.createur.get_full_name }} le
                             {{ invitation.date_creation|date:"d/m/Y à H:i" }}
                         </p>
                     </div>
-                    
+
                     <div class="flex items-center gap-sm">
                         <span class="status-badge status-{{ invitation.statut|lower|slugify }}">
                             {% if invitation.est_valide %}
@@ -93,19 +87,19 @@
                             Expirée
                             {% endif %}
                         </span>
-                        
+
                         <span class="text-xs text-muted">
                             Code: <strong>{{ invitation.code }}</strong>
                         </span>
                     </div>
                 </div>
-                
+
                 <div class="flex-between">
                     <div class="text-sm">
                         <i class="fa-solid fa-clock text-muted mr-1"></i>
                         Expire le {{ invitation.date_expiration|date:"d/m/Y à H:i" }}
                     </div>
-                    
+
                     <div class="text-sm">
                         {% if invitation.est_valide %}
                         <span class="text-success">
@@ -151,38 +145,38 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Formater le numéro de téléphone
-    const telephoneInput = document.getElementById('telephone');
-    
-    telephoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        
-        if (value.length > 0) {
-            if (!value.startsWith('237')) {
-                value = '237' + value;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Formater le numéro de téléphone
+        const telephoneInput = document.getElementById('telephone');
+
+        telephoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+
+            if (value.length > 0) {
+                if (!value.startsWith('237')) {
+                    value = '237' + value;
+                }
+                if (!value.startsWith('+237')) {
+                    value = '+' + value;
+                }
             }
-            if (!value.startsWith('+237')) {
-                value = '+' + value;
+
+            // Limiter à 13 caractères (+237 + 9 chiffres)
+            if (value.length > 13) {
+                value = value.substring(0, 13);
             }
-        }
-        
-        // Limiter à 13 caractères (+237 + 9 chiffres)
-        if (value.length > 13) {
-            value = value.substring(0, 13);
-        }
-        
-        e.target.value = value;
+
+            e.target.value = value;
+        });
+
+        // Validation du formulaire
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+            if (!telephoneInput.validity.valid) {
+                e.preventDefault();
+                alert('Veuillez entrer un numéro de téléphone valide au format +237XXXXXXXXX');
+            }
+        });
     });
-    
-    // Validation du formulaire
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(e) {
-        if (!telephoneInput.validity.valid) {
-            e.preventDefault();
-            alert('Veuillez entrer un numéro de téléphone valide au format +237XXXXXXXXX');
-        }
-    });
-});
 </script>
 {% endblock %}

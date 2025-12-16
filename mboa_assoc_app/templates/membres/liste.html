@@ -16,7 +16,7 @@
 
         <div class="flex gap-md">
             {% if is_president %}
-            <a href="{% url 'inviter_membres' association.id %}" class="btn btn-primary">
+            <a href="{% url 'mboa_assoc_app:inviter_membres' association.id %}" class="btn btn-primary">
                 <i class="fa-solid fa-user-plus icon-white"></i>
                 Inviter un membre
             </a>
@@ -60,13 +60,15 @@
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
                     <div class="dropdown-content">
-                        <a href="{% url 'detail_membre' association.id membre.id %}" class="dropdown-item">
+                        <a href="{% url 'mboa_assoc_app:detail_membre' association.id membre.id %}"
+                            class="dropdown-item">
                             <i class="fa-solid fa-eye"></i> Voir profil
                         </a>
 
                         <!-- Changer rôle -->
                         <div class="dropdown-item">
-                            <form method="POST" action="{% url 'changer_role' association.id membre.id %}"
+                            <form method="POST"
+                                action="{% url 'mboa_assoc_app:changer_role' association.id membre.id %}"
                                 class="changer-role-form">
                                 {% csrf_token %}
                                 <select name="role" class="w-full p-1 border rounded text-sm"
@@ -134,7 +136,7 @@
             <h3 class="text-xl font-semibold mb-sm">Aucun membre</h3>
             <p class="text-muted mb-md">Cette association n'a pas encore de membres.</p>
             {% if is_president %}
-            <a href="{% url 'inviter_membres' association.id %}" class="btn btn-primary">
+            <a href="{% url 'mboa_assoc_app:inviter_membres' association.id %}" class="btn btn-primary">
                 <i class="fa-solid fa-user-plus"></i>
                 Inviter le premier membre
             </a>
