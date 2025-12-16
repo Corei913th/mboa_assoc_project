@@ -1,0 +1,151 @@
+{% extends 'associations/base_association.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-sm">
+    <!-- En-tête de la page -->
+    <div class="page-header">
+        <h1 class="page-title">Créer une association</h1>
+        <p class="text-muted">Remplissez les informations pour créer votre association, tontine ou syndicat</p>
+    </div>
+    
+    <!-- Formulaire -->
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" data-validate="true">
+                {% csrf_token %}
+                
+                <!-- Informations de base -->
+                <div class="form-group">
+                    <label for="id_name" class="form-label required">Nom de l'association</label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="id_name" 
+                        class="form-input" 
+                        placeholder="Ex: Association des Commerçants"
+                        required
+                        maxlength="200"
+                        value="{{ form.name.value|default:'' }}"
+                    >
+                    {% if form.name.errors %}
+                        <span class="form-error">{{ form.name.errors.0 }}</span>
+                    {% endif %}
+                    <span class="form-help">Minimum 3 caractères</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_type" class="form-label required">Type</label>
+                    <select name="type" id="id_type" class="form-select" required>
+                        <option value="">Sélectionnez un type</option>
+                        <option value="association" {% if form.type.value == 'association' %}selected{% endif %}>Association</option>
+                        <option value="tontine" {% if form.type.value == 'tontine' %}selected{% endif %}>Tontine</option>
+                        <option value="syndicat" {% if form.type.value == 'syndicat' %}selected{% endif %}>Syndicat</option>
+                    </select>
+                    {% if form.type.errors %}
+                        <span class="form-error">{{ form.type.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_description" class="form-label">Description</label>
+                    <textarea 
+                        name="description" 
+                        id="id_description" 
+                        class="form-textarea"
+                        placeholder="Décrivez les objectifs et activités de votre association..."
+                        rows="4"
+                    >{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                        <span class="form-error">{{ form.description.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Informations légales (optionnelles) -->
+                <div class="card" style="margin-bottom: 24px; background-color: var(--bg-secondary);">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-size: 1.125rem;">Informations légales (optionnel)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="id_registration_number" class="form-label">Numéro d'enregistrement</label>
+                            <input 
+                                type="text" 
+                                name="registration_number" 
+                                id="id_registration_number" 
+                                class="form-input"
+                                placeholder="Ex: 2023/ASSOC/001"
+                                value="{{ form.registration_number.value|default:'' }}"
+                            >
+                            {% if form.registration_number.errors %}
+                                <span class="form-error">{{ form.registration_number.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_legal_status" class="form-label">Statut juridique</label>
+                            <input 
+                                type="text" 
+                                name="legal_status" 
+                                id="id_legal_status" 
+                                class="form-input"
+                                placeholder="Ex: Association loi 1901"
+                                value="{{ form.legal_status.value|default:'' }}"
+                            >
+                            {% if form.legal_status.errors %}
+                                <span class="form-error">{{ form.legal_status.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="id_creation_date" class="form-label">Date de création officielle</label>
+                            <input 
+                                type="date" 
+                                name="creation_date" 
+                                id="id_creation_date" 
+                                class="form-input"
+                                value="{{ form.creation_date.value|default:'' }}"
+                            >
+                            {% if form.creation_date.errors %}
+                                <span class="form-error">{{ form.creation_date.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Logo -->
+                <div class="form-group">
+                    <label for="id_logo" class="form-label">Logo</label>
+                    <input 
+                        type="file" 
+                        name="logo" 
+                        id="id_logo" 
+                        class="form-file"
+                        accept="image/*"
+                    >
+                    {% if form.logo.errors %}
+                        <span class="form-error">{{ form.logo.errors.0 }}</span>
+                    {% endif %}
+                    <span class="form-help">Format acceptés: JPG, PNG, GIF (max 5MB). L'image sera automatiquement redimensionnée.</span>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="d-flex justify-between gap-2" style="margin-top: 32px;">
+                    <a href="{% url 'mboa_assoc_app:my_associations' %}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12l5 5L20 7"/>
+                        </svg>
+                        Créer l'association
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Information importante -->
+    <div class="alert alert-info" style="margin-top: 24px;">
+        <strong>Information:</strong> Vous serez automatiquement nommé président de l'association. Vous pourrez ensuite ajouter des membres et nommer un trésorier.
+    </div>
+</div>
+{% endblock %}
