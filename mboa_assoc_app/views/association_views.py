@@ -36,7 +36,7 @@ def create_association(request):
                     request, 
                     f"L'association '{association.name}' a été créée avec succès !"
                 )
-                return redirect('mboa_assoc_app:association_detail', id=association.id)
+                return redirect('mboa_assoc_app:my_associations')
             except Exception as e:
                 messages.error(request, f"Erreur lors de la création : {str(e)}")
     else:
