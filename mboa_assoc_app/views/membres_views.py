@@ -35,7 +35,7 @@ def liste_membres_view(request, association_id):
         'membres': membres,
         'adhésions_dict': adhésions_dict,
         'adhesion_utilisateur': adhesion_utilisateur,
-        'form': InvitationForm()
+        'invitation_form': InvitationForm()
     })
 
 
@@ -49,7 +49,7 @@ def inviter_membres_view(request, association_id):
         adhesion = Adhesion.objects.get(membre=request.user, association=association)
         if adhesion.role != Role.PRESIDENT:
             messages.error(request, "Seuls les présidents peuvent inviter des membres")
-            return redirect('liste_membres', association_id=association_id)
+            return redirect('mboa_assoc_app:liste_membres', association_id=association_id)
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
         return redirect('mboa_assoc_app:dashboard')
