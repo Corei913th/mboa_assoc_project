@@ -118,7 +118,7 @@ def accepter_invitation_view(request, code):
                     request.user,
                     invitation.createur
                 )
-                return redirect('mboa_assoc_app:association_detail', id=invitation.association.id)
+                return redirect('mboa_assoc_app:my_associations')
             else:
                 messages.error(request, message)
         elif action == 'refuser':
