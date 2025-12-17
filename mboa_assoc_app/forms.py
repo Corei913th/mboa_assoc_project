@@ -28,11 +28,14 @@ def validate_otp_code(value):
 class AssociationForm(forms.ModelForm):
     class Meta:
         model = Association
-        fields = ['name', 'type', 'description', 'logo']
+        fields = ['name', 'type', 'description', 'logo', 'registration_number', 'legal_status', 'creation_date']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Nom de l\'association'}),
             'type': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={'class': 'form-textarea', 'placeholder': 'Décrivez votre association...', 'rows': 4}),
+            'registration_number': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Numéro d\'enregistrement'}),
+            'legal_status': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Statut juridique'}),
+            'creation_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
             'logo': forms.FileInput(attrs={'class': 'form-file', 'accept': 'image/*'})
         }
     
