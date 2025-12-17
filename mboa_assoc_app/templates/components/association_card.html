@@ -1,0 +1,19 @@
+{% comment %}Composant: Carte d'association{% endcomment %}
+<div class="card border hover:shadow-lg transition-shadow">
+  <div class="card-body">
+    <div class="flex-between mb-3">
+      <h3 class="font-bold text-lg">{{ association.name }}</h3>
+      <span class="badge badge-primary">{{ role }}</span>
+    </div>
+    <p class="text-sm text-muted mb-4">{{ association.get_type_display }}</p>
+    <div class="flex gap-2">
+      <a href="{% url 'mboa_assoc_app:association_dashboard' association.id %}" class="btn btn-primary btn-sm flex-1">
+        <i class="fa-solid fa-chart-line"></i>
+        Dashboard
+      </a>
+      <a href="{% url 'mboa_assoc_app:liste_cotisations' association.id %}" class="btn btn-outline btn-sm">
+        <i class="fa-solid fa-money-bill-wave"></i>
+      </a>
+    </div>
+  </div>
+</div>

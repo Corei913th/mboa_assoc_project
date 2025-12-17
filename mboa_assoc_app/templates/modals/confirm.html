@@ -1,0 +1,26 @@
+{% comment %}Modal générique de confirmation{% endcomment %}
+<div id="confirmModal" class="modal-overlay hidden">
+  <div class="modal-container" onclick="event.stopPropagation()">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i id="confirmIcon" class="fa-solid fa-exclamation-triangle text-warning"></i>
+          <span id="confirmTitle">Confirmation</span>
+        </h3>
+        <button type="button" class="modal-close" onclick="closeModal('confirmModal')">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <form id="confirmForm" method="POST" action="">
+        {% csrf_token %}
+        <div class="modal-body">
+          <p id="confirmMessage" class="text-foreground"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="closeModal('confirmModal')" class="btn btn-secondary">Annuler</button>
+          <button type="submit" id="confirmButton" class="btn btn-error">Confirmer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,222 +1,371 @@
 {% extends 'associations/base_association.html' %}
 {% load static %}
-
 {% block content %}
-<div class="container">
-    <!-- En-tête de l'association -->
-    <div class="association-header">
-        {% if association.logo %}
-            <img src="{{ association.logo.url }}" alt="Logo {{ association.name }}" class="association-logo">
-        {% else %}
-            <div class="association-logo" style="background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-size: 2rem; font-weight: bold;">
-                {{ association.name|slice:":2"|upper }}
+    <div class="container">
+        <!-- En-tête de l'association -->
+        <div class="association-header">
+            {% if association.logo %}
+                <img src="{{ association.logo.url }}"
+                     alt="Logo {{ association.name }}"
+                     class="association-logo">
+            {% else %}
+                <div class="association-logo"
+                     style="background-color: var(--primary-light);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: var(--primary-color);
+                            font-size: 2rem;
+                            font-weight: bold">{{ association.name|slice:":2"|upper }}</div>
+            {% endif %}
+            <div class="association-info">
+                <h1 class="association-name">{{ association.name }}</h1>
+                <span class="association-type">{{ association.get_type_display }}</span>
+                {% if association.is_archived %}<span class="badge badge-warning" style="margin-left: 8px;">Archivée</span>{% endif %}
+            </div>
+            <!-- Actions rapides -->
+            <div class="d-flex gap-2">
+                {% if adhesion.role == 'PRESIDENT' %}
+                    <button type="button"
+                            onclick="openModal('modifierAssociationModal')"
+                            class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-pen"></i>
+                        Modifier
+                    </button>
+                {% endif %}
+                {% if adhesion.role == 'PRESIDENT' or adhesion.role == 'TRESORIER' %}
+                    <a href="{% url 'mboa_assoc_app:manage_members' association.id %}"
+                       class="btn btn-primary btn-sm">
+                        <svg width="16"
+                             height="16"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        Gérer les membres
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Contenu principal -->
+        <div class="grid grid-2">
+            <!-- Informations générales -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Informations générales</h2>
+                </div>
+                <div class="card-body">
+                    {% if association.description %}
+                        <p style="margin-bottom: 24px;
+                                  color: var(--text-secondary);
+                                  line-height: 1.6">{{ association.description }}</p>
+                    {% else %}
+                        <p class="text-muted" style="margin-bottom: 24px;">Aucune description</p>
+                    {% endif %}
+                    <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 16px">
+                        <div>
+                            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Type</p>
+                            <p style="font-weight: 500;">{{ association.get_type_display }}</p>
+                        </div>
+                        <div>
+                            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Devise</p>
+                            <p style="font-weight: 500;">{{ association.currency }}</p>
+                        </div>
+                        <div>
+                            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Membres</p>
+                            <p style="font-weight: 500;">
+                                {{ association.get_member_count }} membre{{
+                                association.get_member_count|pluralize }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Créée le</p>
+                            <p style="font-weight: 500;">{{ association.created_at|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                    {% if association.registration_number or association.legal_status or association.creation_date %}
+                        <hr style="margin: 24px 0;
+                                   border: none;
+                                   border-top: 1px solid var(--border-color)">
+                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Informations légales</h3>
+                        <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
+                            {% if association.registration_number %}
+                                <div>
+                                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Numéro d'enregistrement</p>
+                                    <p style="font-weight: 500;">{{ association.registration_number }}</p>
+                                </div>
+                            {% endif %}
+                            {% if association.legal_status %}
+                                <div>
+                                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Statut juridique</p>
+                                    <p style="font-weight: 500;">{{ association.legal_status }}</p>
+                                </div>
+                            {% endif %}
+                            {% if association.creation_date %}
+                                <div>
+                                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">
+                                        Date de création
+                                        officielle
+                                    </p>
+                                    <p style="font-weight: 500;">{{ association.creation_date|date:"d/m/Y" }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Membres et rôles -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Membres ({{ members.count }})</h2>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <ul class="member-list">
+                        {% if president %}
+                            <li class="member-item">
+                                <div class="member-info">
+                                    <div class="member-avatar">
+                                        {{ president.get_full_name|slice:":1"|upper|default:president.username|slice:":1"|upper
+                                        }}
+                                    </div>
+                                    <div class="member-details">
+                                        <h4>{{ president.get_full_name|default:president.username }}</h4>
+                                        <p>{{ president.email }}</p>
+                                    </div>
+                                </div>
+                                <span class="badge badge-primary">Président</span>
+                            </li>
+                        {% endif %}
+                        {% if treasurer %}
+                            <li class="member-item">
+                                <div class="member-info">
+                                    <div class="member-avatar">
+                                        {{ treasurer.get_full_name|slice:":1"|upper|default:treasurer.username|slice:":1"|upper
+                                        }}
+                                    </div>
+                                    <div class="member-details">
+                                        <h4>{{ treasurer.get_full_name|default:treasurer.username }}</h4>
+                                        <p>{{ treasurer.email }}</p>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">Trésorier</span>
+                            </li>
+                        {% endif %}
+                        {% for member in members %}
+                            {% if member.role == 'member' %}
+                                <li class="member-item">
+                                    <div class="member-info">
+                                        <div class="member-avatar">
+                                            {{
+                                            member.user.get_full_name|slice:":1"|upper|default:member.user.username|slice:":1"|upper
+                                            }}
+                                        </div>
+                                        <div class="member-details">
+                                            <h4>{{ member.user.get_full_name|default:member.user.username }}</h4>
+                                            <p>{{ member.user.email }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="badge"
+                                          style="background-color: var(--bg-tertiary);
+                                                 color: var(--text-secondary)">Membre</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% if adhesion.role == 'PRESIDENT' or adhesion.role == 'TRESORIER' %}
+                    <div class="card-footer">
+                        <a href="{% url 'mboa_assoc_app:manage_members' association.id %}"
+                           class="btn btn-outline btn-sm btn-block">Gérer les membres</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Actions dangereuses (président uniquement) -->
+        {% if adhesion.role == 'PRESIDENT' %}
+            <div class="card"
+                 style="margin-top: 32px;
+                        border-color: var(--danger-color)">
+                <div class="card-header"
+                     style="background-color: var(--danger-light);
+                            border-color: var(--danger-color)">
+                    <h2 class="card-title" style="color: var(--danger-color);">Zone dangereuse</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-between align-center"
+                         style="margin-bottom: 16px">
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">
+                                {% if association.is_archived %}
+                                    Désarchiver l'association
+                                {% else %}
+                                    Archiver l'association
+                                {% endif %}
+                            </h3>
+                            <p class="text-muted" style="font-size: 0.875rem;">
+                                {% if association.is_archived %}
+                                    Restaurer l'association et la rendre à nouveau active
+                                {% else %}
+                                    L'association sera masquée mais pourra être restaurée
+                                {% endif %}
+                            </p>
+                        </div>
+                        <form method="post"
+                              action="{% url 'mboa_assoc_app:archive_association' association.id %}"
+                              style="margin: 0">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-warning btn-sm"
+                                    data-confirm="Êtes-vous sûr de vouloir {% if association.is_archived %}désarchiver{% else %}archiver{% endif %} cette association ?">
+                                {% if association.is_archived %}
+                                    Désarchiver
+                                {% else %}
+                                    Archiver
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    <hr style="margin: 16px 0;
+                               border: none;
+                               border-top: 1px solid var(--border-color)">
+                    <div class="d-flex justify-between align-center">
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">Supprimer l'association</h3>
+                            <p class="text-muted" style="font-size: 0.875rem;">
+                                Cette action est irréversible. Toutes les données
+                                seront perdues.
+                            </p>
+                        </div>
+                        <form method="post"
+                              action="{% url 'mboa_assoc_app:delete_association' association.id %}"
+                              style="margin: 0">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm"
+                                    data-confirm="⚠️ ATTENTION: Cette action est IRRÉVERSIBLE. Toutes les données de l'association seront définitivement supprimées. Êtes-vous absolument certain de vouloir continuer ?">
+                                Supprimer définitivement
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         {% endif %}
-        
-        <div class="association-info">
-            <h1 class="association-name">{{ association.name }}</h1>
-            <span class="association-type">{{ association.get_type_display }}</span>
-            {% if association.is_archived %}
-                <span class="badge badge-warning" style="margin-left: 8px;">Archivée</span>
-            {% endif %}
-        </div>
-        
-        <!-- Actions rapides -->
-        <div class="d-flex gap-2">
-            {% if can_manage_settings %}
-                <a href="{% url 'mboa_assoc_app:association_settings' association.id %}" class="btn btn-outline btn-sm">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.2 4.2l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.2-4.2l4.2-4.2"/>
-                    </svg>
-                    Paramètres
-                </a>
-            {% endif %}
-            {% if can_manage_members %}
-                <a href="{% url 'mboa_assoc_app:manage_members' association.id %}" class="btn btn-primary btn-sm">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    Gérer les membres
-                </a>
-            {% endif %}
-        </div>
-    </div>
-    
-    <!-- Contenu principal -->
-    <div class="grid grid-2">
-        <!-- Informations générales -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Informations générales</h2>
-            </div>
-            <div class="card-body">
-                {% if association.description %}
-                    <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.6;">
-                        {{ association.description }}
-                    </p>
-                {% else %}
-                    <p class="text-muted" style="margin-bottom: 24px;">Aucune description</p>
-                {% endif %}
-                
-                <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Type</p>
-                        <p style="font-weight: 500;">{{ association.get_type_display }}</p>
-                    </div>
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Devise</p>
-                        <p style="font-weight: 500;">{{ association.currency }}</p>
-                    </div>
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Membres</p>
-                        <p style="font-weight: 500;">{{ association.get_member_count }} membre{{ association.get_member_count|pluralize }}</p>
-                    </div>
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Créée le</p>
-                        <p style="font-weight: 500;">{{ association.created_at|date:"d/m/Y" }}</p>
-                    </div>
-                </div>
-                
-                {% if association.registration_number or association.legal_status or association.creation_date %}
-                <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
-                
-                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Informations légales</h3>
-                <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
-                    {% if association.registration_number %}
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Numéro d'enregistrement</p>
-                        <p style="font-weight: 500;">{{ association.registration_number }}</p>
-                    </div>
-                    {% endif %}
-                    {% if association.legal_status %}
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Statut juridique</p>
-                        <p style="font-weight: 500;">{{ association.legal_status }}</p>
-                    </div>
-                    {% endif %}
-                    {% if association.creation_date %}
-                    <div>
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 4px;">Date de création officielle</p>
-                        <p style="font-weight: 500;">{{ association.creation_date|date:"d/m/Y" }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        
-        <!-- Membres et rôles -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Membres ({{ members.count }})</h2>
-            </div>
-            <div class="card-body" style="padding: 0;">
-                <ul class="member-list">
-                    {% if president %}
-                    <li class="member-item">
-                        <div class="member-info">
-                            <div class="member-avatar">
-                                {{ president.get_full_name|slice:":1"|upper|default:president.username|slice:":1"|upper }}
-                            </div>
-                            <div class="member-details">
-                                <h4>{{ president.get_full_name|default:president.username }}</h4>
-                                <p>{{ president.email }}</p>
-                            </div>
+        <!-- Modal: Modifier l'Association -->
+        {% if adhesion.role == 'PRESIDENT' %}
+            <div id="modifierAssociationModal" class="modal-overlay hidden">
+                <div class="modal-container" onclick="event.stopPropagation()">
+                    <div class="modal-content modal-lg">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Modifier l'Association</h3>
+                            <button type="button"
+                                    class="modal-close"
+                                    onclick="closeModal('modifierAssociationModal')">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
                         </div>
-                        <span class="badge badge-primary">Président</span>
-                    </li>
-                    {% endif %}
-                    
-                    {% if treasurer %}
-                    <li class="member-item">
-                        <div class="member-info">
-                            <div class="member-avatar">
-                                {{ treasurer.get_full_name|slice:":1"|upper|default:treasurer.username|slice:":1"|upper }}
-                            </div>
-                            <div class="member-details">
-                                <h4>{{ treasurer.get_full_name|default:treasurer.username }}</h4>
-                                <p>{{ treasurer.email }}</p>
-                            </div>
-                        </div>
-                        <span class="badge badge-success">Trésorier</span>
-                    </li>
-                    {% endif %}
-                    
-                    {% for member in members %}
-                        {% if member.role == 'member' %}
-                        <li class="member-item">
-                            <div class="member-info">
-                                <div class="member-avatar">
-                                    {{ member.user.get_full_name|slice:":1"|upper|default:member.user.username|slice:":1"|upper }}
+                        <form method="POST"
+                              action="{% url 'mboa_assoc_app:association_settings' association.id %}"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal-body space-y-4">
+                                <div class="form-group">
+                                    <label for="name_edit" class="form-label">Nom de l'association *</label>
+                                    <input type="text"
+                                           id="name_edit"
+                                           name="name"
+                                           class="form-input"
+                                           value="{{ association.name }}"
+                                           required
+                                           minlength="3">
                                 </div>
-                                <div class="member-details">
-                                    <h4>{{ member.user.get_full_name|default:member.user.username }}</h4>
-                                    <p>{{ member.user.email }}</p>
+                                <div class="form-group">
+                                    <label for="type_edit" class="form-label">Type d'association *</label>
+                                    <select id="type_edit" name="type" class="form-input" required>
+                                        <option value="TONTINE"
+                                                {% if association.type == 'TONTINE' %}selected{% endif %}>
+                                            Tontine
+                                        </option>
+                                        <option value="ASSOCIATION"
+                                                {% if association.type == 'ASSOCIATION' %}selected{% endif %}>
+                                            Association
+                                        </option>
+                                        <option value="SYNDICAT"
+                                                {% if association.type == 'SYNDICAT' %}selected{% endif %}>
+                                            Syndicat
+                                        </option>
+                                        <option value="COOPERATIVE"
+                                                {% if association.type == 'COOPERATIVE' %}selected{% endif %}>
+                                            Coopérative
+                                        </option>
+                                        <option value="AUTRE" {% if association.type == 'AUTRE' %}selected{% endif %}>Autre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description_edit" class="form-label">Description</label>
+                                    <textarea id="description_edit" name="description" class="form-input" rows="3">{{ association.description }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="logo_edit" class="form-label">Logo</label>
+                                    {% if association.logo %}
+                                        <div class="mb-2">
+                                            <img src="{{ association.logo.url }}"
+                                                 alt="Logo actuel"
+                                                 style="max-width: 100px;
+                                                        border-radius: var(--radius-md)">
+                                        </div>
+                                    {% endif %}
+                                    <input type="file"
+                                           id="logo_edit"
+                                           name="logo"
+                                           class="form-input"
+                                           accept="image/*">
+                                    <p class="text-sm text-muted mt-2">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        Laissez vide pour garder le logo actuel
+                                    </p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label for="registration_number_edit" class="form-label">Numéro d'enregistrement</label>
+                                        <input type="text"
+                                               id="registration_number_edit"
+                                               name="registration_number"
+                                               class="form-input"
+                                               value="{{ association.registration_number }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="creation_date_edit" class="form-label">Date de création</label>
+                                        <input type="date"
+                                               id="creation_date_edit"
+                                               name="creation_date"
+                                               class="form-input"
+                                               value="{{ association.creation_date|date:'Y-m-d' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="legal_status_edit" class="form-label">Statut juridique</label>
+                                    <input type="text"
+                                           id="legal_status_edit"
+                                           name="legal_status"
+                                           class="form-input"
+                                           value="{{ association.legal_status }}">
                                 </div>
                             </div>
-                            <span class="badge" style="background-color: var(--bg-tertiary); color: var(--text-secondary);">Membre</span>
-                        </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-            {% if can_manage_members %}
-            <div class="card-footer">
-                <a href="{% url 'mboa_assoc_app:manage_members' association.id %}" class="btn btn-outline btn-sm btn-block">
-                    Gérer les membres
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    
-    <!-- Actions dangereuses (président uniquement) -->
-    {% if can_manage_settings %}
-    <div class="card" style="margin-top: 32px; border-color: var(--danger-color);">
-        <div class="card-header" style="background-color: var(--danger-light); border-color: var(--danger-color);">
-            <h2 class="card-title" style="color: var(--danger-color);">Zone dangereuse</h2>
-        </div>
-        <div class="card-body">
-            <div class="d-flex justify-between align-center" style="margin-bottom: 16px;">
-                <div>
-                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">
-                        {% if association.is_archived %}Désarchiver l'association{% else %}Archiver l'association{% endif %}
-                    </h3>
-                    <p class="text-muted" style="font-size: 0.875rem;">
-                        {% if association.is_archived %}
-                            Restaurer l'association et la rendre à nouveau active
-                        {% else %}
-                            L'association sera masquée mais pourra être restaurée
-                        {% endif %}
-                    </p>
+                            <div class="modal-footer">
+                                <button type="button"
+                                        onclick="closeModal('modifierAssociationModal')"
+                                        class="btn btn-secondary">Annuler</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-check"></i>
+                                    Enregistrer les modifications
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <form method="post" action="{% url 'mboa_assoc_app:archive_association' association.id %}" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning btn-sm" data-confirm="Êtes-vous sûr de vouloir {% if association.is_archived %}désarchiver{% else %}archiver{% endif %} cette association ?">
-                        {% if association.is_archived %}Désarchiver{% else %}Archiver{% endif %}
-                    </button>
-                </form>
             </div>
-            
-            <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-color);">
-            
-            <div class="d-flex justify-between align-center">
-                <div>
-                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">Supprimer l'association</h3>
-                    <p class="text-muted" style="font-size: 0.875rem;">Cette action est irréversible. Toutes les données seront perdues.</p>
-                </div>
-                <form method="post" action="{% url 'mboa_assoc_app:delete_association' association.id %}" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm" data-confirm="⚠️ ATTENTION: Cette action est IRRÉVERSIBLE. Toutes les données de l'association seront définitivement supprimées. Êtes-vous absolument certain de vouloir continuer ?">
-                        Supprimer définitivement
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endblock %}
+        {% endif %}
+    {% endblock %}

@@ -93,7 +93,9 @@ def effectuer_paiement_view(request, cotisation_id):
     context = {
         'cotisation': cotisation,
         'association': association,
-        'methodes': MethodePaiement.choices
+        'methodes': MethodePaiement.choices,
+        'page_title': 'Effectuer un paiement',
+        'page_subtitle': association.name
     }
     return render(request, 'paiements/effectuer.html', context)
 
@@ -136,6 +138,8 @@ def historique_paiements_view(request, association_id):
         'association': association,
         'paiements': paiements,
         'total_collecte': total_collecte,
-        'adhesion': adhesion
+        'adhesion': adhesion,
+        'page_title': 'Historique des paiements',
+        'page_subtitle': association.name
     }
     return render(request, 'paiements/historique.html', context)

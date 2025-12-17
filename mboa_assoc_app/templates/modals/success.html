@@ -1,0 +1,22 @@
+{% comment %}Modal générique de succès{% endcomment %}
+<div id="successModal" class="modal-overlay hidden">
+  <div class="modal-container" onclick="event.stopPropagation()">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fa-solid fa-check-circle text-success"></i>
+          Succès
+        </h3>
+        <button type="button" class="modal-close" onclick="closeModal('successModal')">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="successMessage" class="text-foreground"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('successModal')" class="btn btn-primary">OK</button>
+      </div>
+    </div>
+  </div>
+</div>

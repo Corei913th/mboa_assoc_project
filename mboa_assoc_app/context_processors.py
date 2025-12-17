@@ -1,23 +1,27 @@
-# context_processors.py
-def notifications_context(request):
-    """
-    Ajoute le nombre d'invitations en attente au contexte global.
-    """
+"""
+Context processors pour ajouter des données globales
+"""
+from .models import Adhesion, Invitation
+
+def user_associations(request):
+    """Ajoute les associations de l'utilisateur au contexte global"""
     if request.user.is_authenticated:
-        from .models import Invitation
+        adhesions = Adhesion.objects.filter(
+            membre=request.user,
+            is_active=True
+        ).select_related('association')
+        
+        # Compter les invitations en attente
         invitations_count = Invitation.objects.filter(
             telephone_invite=request.user.telephone,
             statut=Invitation.StatutInvitation.EN_ATTENTE
         ).count()
         
-        # Filtrer les invitations valides
-        invitations = Invitation.objects.filter(
-            telephone_invite=request.user.telephone,
-            statut=Invitation.StatutInvitation.EN_ATTENTE
-        )
-        invitations_valides_count = sum(1 for inv in invitations if inv.est_valide())
-        
         return {
-            'invitations_en_attente_count': invitations_valides_count
+            'user_adhesions': adhesions,
+            'user_associations_count': adhesions.count(),
+            'invitations_en_attente_count': invitations_count
         }
-    return {}
+    return {
+        'invitations_en_attente_count': 0
+    }

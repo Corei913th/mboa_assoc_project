@@ -30,6 +30,8 @@ def association_dashboard_view(request, association_id):
         messages.error(request, "Vous n'êtes pas membre de cette association")
         return redirect('mboa_assoc_app:dashboard')
     
+    from ..forms import InvitationForm, CotisationForm
+    
     # Statistiques des membres
     total_membres = Adhesion.objects.filter(
         association=association,
@@ -74,6 +76,9 @@ def association_dashboard_view(request, association_id):
         is_active=True
     ).select_related('membre').order_by('-date')[:5]
     
+    # Initialiser les forms pour les modals
+    initial_cotisation = {'date_echeance': (timezone.now() + timedelta(days=30)).date()}
+    
     context = {
         'association': association,
         'adhesion': adhesion,
@@ -85,6 +90,8 @@ def association_dashboard_view(request, association_id):
         'prochaine_cotisation': prochaine_cotisation,
         'derniers_paiements': derniers_paiements,
         'membres_recents': membres_recents,
+        'invitation_form': InvitationForm(),
+        'cotisation_form': CotisationForm(initial=initial_cotisation),
     }
     return render(request, 'associations/dashboard.html', context)
 

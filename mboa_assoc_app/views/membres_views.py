@@ -17,56 +17,36 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def liste_membres_view(request, association_id):
-    """
-    Affiche la liste des membres d'une association.
-    """
+    from ..forms import InvitationForm
+    
     association = get_object_or_404(Association, id=association_id)
     
-    # Vérifier si l'utilisateur est membre de cette association
     try:
-        adhesion_utilisateur = Adhesion.objects.get(
-            membre=request.user,
-            association=association
-        )
+        adhesion_utilisateur = Adhesion.objects.get(membre=request.user, association=association)
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
         return redirect('mboa_assoc_app:dashboard')
     
-    # Récupérer tous les membres avec leurs adhésions
-    membres = Membre.objects.filter(
-        adhesions__association=association
-    ).select_related().prefetch_related('adhesions')
+    membres = Membre.objects.filter(adhesions__association=association).select_related().prefetch_related('adhesions')
+    adhésions_dict = {adhesion.membre_id: adhesion for adhesion in Adhesion.objects.filter(association=association)}
     
-    # Récupérer les adhésions pour afficher les rôles
-    adhésions_dict = {
-        adhesion.membre_id: adhesion 
-        for adhesion in Adhesion.objects.filter(association=association)
-    }
-    
-    context = {
+    return render(request, 'membres/liste.html', {
         'association': association,
         'membres': membres,
         'adhésions_dict': adhésions_dict,
-        'user_adhesion': adhesion_utilisateur,
-        'is_president': adhesion_utilisateur.role == Role.PRESIDENT,
-    }
-    
-    return render(request, 'membres/liste.html', context)
+        'adhesion_utilisateur': adhesion_utilisateur,
+        'form': InvitationForm()
+    })
 
 
 @login_required
 def inviter_membres_view(request, association_id):
-    """
-    Interface pour inviter des membres par téléphone.
-    """
+    from ..forms import InvitationForm
+    
     association = get_object_or_404(Association, id=association_id)
     
-    # Vérifier si l'utilisateur est président
     try:
-        adhesion = Adhesion.objects.get(
-            membre=request.user,
-            association=association
-        )
+        adhesion = Adhesion.objects.get(membre=request.user, association=association)
         if adhesion.role != Role.PRESIDENT:
             messages.error(request, "Seuls les présidents peuvent inviter des membres")
             return redirect('liste_membres', association_id=association_id)
@@ -75,45 +55,37 @@ def inviter_membres_view(request, association_id):
         return redirect('mboa_assoc_app:dashboard')
     
     if request.method == 'POST':
-        telephone = request.POST.get('telephone', '').strip()
-        
-        if not telephone:
-            messages.error(request, "Veuillez entrer un numéro de téléphone")
-            return redirect('inviter_membres', association_id=association_id)
-        
-        # Créer l'invitation
-        invitation, error = InvitationService.creer_invitation(
-            association=association,
-            telephone_invite=telephone,
-            createur=request.user
-        )
-        
-        if error:
-            messages.error(request, error)
-        else:
-            # Envoyer une notification
-            NotificationService.notifier_invitation(invitation)
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            telephone = form.cleaned_data['telephone']
+            invitation, error = InvitationService.creer_invitation(association, telephone, request.user)
             
-            messages.success(
-                request, 
-                f"Invitation envoyée à {telephone}. Code: {invitation.code}"
-            )
-            logger.info(f"Invitation créée: {invitation.code} pour {telephone}")
-        
-        return redirect('inviter_membres', association_id=association_id)
+            if error:
+                messages.error(request, error)
+            else:
+                NotificationService.notifier_invitation(invitation)
+                messages.success(request, f"Invitation envoyée à {telephone}")
+                logger.info(f"Invitation créée: {invitation.code} pour {telephone}")
+            
+            next_url = request.GET.get('next', '')
+            if next_url == 'dashboard':
+                return redirect('mboa_assoc_app:association_dashboard', association_id=association_id)
+            return redirect('mboa_assoc_app:inviter_membres', association_id=association_id)
+        else:
+            messages.error(request, "Formulaire invalide. Vérifiez les informations saisies.")
+    else:
+        form = InvitationForm()
     
-    # Afficher les invitations en attente
     invitations_en_attente = Invitation.objects.filter(
         association=association,
         statut=Invitation.StatutInvitation.EN_ATTENTE
     )
     
-    context = {
+    return render(request, 'membres/inviter.html', {
         'association': association,
         'invitations_en_attente': invitations_en_attente,
-    }
-    
-    return render(request, 'membres/inviter.html', context)
+        'form': form
+    })
 
 
 @login_required
@@ -146,7 +118,7 @@ def accepter_invitation_view(request, code):
                     request.user,
                     invitation.createur
                 )
-                return redirect('liste_membres', association_id=invitation.association.id)
+                return redirect('mboa_assoc_app:association_detail', id=invitation.association.id)
             else:
                 messages.error(request, message)
         elif action == 'refuser':
@@ -299,10 +271,21 @@ def detail_membre_view(request, association_id, membre_id):
         messages.error(request, "Ce membre n'appartient pas à cette association")
         return redirect('liste_membres', association_id=association_id)
     
+    # Récupérer l'adhésion de l'utilisateur connecté
+    try:
+        adhesion_utilisateur = Adhesion.objects.get(
+            membre=request.user,
+            association=association
+        )
+    except Adhesion.DoesNotExist:
+        messages.error(request, "Vous n'êtes pas membre de cette association")
+        return redirect('mboa_assoc_app:dashboard')
+    
     context = {
         'association': association,
         'membre': membre,
         'adhesion': adhesion,
+        'adhesion_utilisateur': adhesion_utilisateur,
     }
     
     return render(request, 'membres/detail.html', context)

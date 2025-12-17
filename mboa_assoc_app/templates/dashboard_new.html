@@ -1,0 +1,330 @@
+{% extends 'base_with_sidebar.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock extra_css %}
+{% block title %}
+  Tableau de Bord
+{% endblock title %}
+{% block content %}
+  <div class="dashboard-container">
+    <!-- 🔴 ALERTES PRIORITAIRES -->
+    {% if cotisations_en_attente %}
+      <div class="card border-error">
+        <div class="card-body bg-error-light">
+          <div class="flex-between items-center">
+            <div class="alert-content-wrapper">
+              <i class="fa-solid fa-exclamation-circle text-4xl text-error"></i>
+              <div>
+                <h2 class="text-xl font-bold text-error">
+                  {{ cotisations_en_attente|length }} cotisation
+                  {% if cotisations_en_attente|length > 1 %}s{% endif %}
+                  à payer
+                </h2>
+                <p class="text-sm text-muted">Total : {{ total_a_payer|floatformat:0 }} FCFA</p>
+              </div>
+            </div>
+            <a href="#cotisations" class="btn btn-error">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              Payer maintenant
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <!-- 🟡 INVITATIONS EN ATTENTE -->
+    {% if invitations_en_attente_count > 0 %}
+      <div class="card border-warning">
+        <div class="card-body bg-warning-light">
+          <div class="flex-between items-center">
+            <div class="alert-content-wrapper">
+              <i class="fa-solid fa-envelope text-4xl text-warning"></i>
+              <div>
+                <h2 class="text-xl font-bold text-warning">
+                  {{ invitations_en_attente_count }} invitation
+                  {% if invitations_en_attente_count > 1 %}s{% endif %}
+                  en attente
+                </h2>
+                <p class="text-sm text-muted">Rejoignez de nouvelles associations</p>
+              </div>
+            </div>
+            <a href="{% url 'mboa_assoc_app:mes_invitations' %}"
+               class="btn btn-warning">
+              <i class="fa-solid fa-check"></i>
+              Voir les invitations
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <!-- 💰 COTISATIONS À PAYER (groupées par association) -->
+    {% if cotisations_par_association %}
+      <div id="cotisations" class="card">
+        <div class="card-header flex-between">
+          <div>
+            <h2 class="text-xl font-bold">Cotisations à payer</h2>
+            <p class="text-sm text-muted">Organisées par association</p>
+          </div>
+          <input type="text"
+                 id="filterCotisations"
+                 placeholder="Filtrer par association..."
+                 class="form-input filter-input">
+        </div>
+        <div class="card-body" id="cotisationsList">
+          {% for assoc_data in cotisations_par_association %}
+            <details class="accordion-item border rounded-lg overflow-hidden"
+                     data-association="{{ assoc_data.association.name|lower }}">
+              <summary class="accordion-header cursor-pointer">
+                <i class="fa-solid fa-chevron-right accordion-icon text-error"></i>
+                {% if assoc_data.association.logo %}
+                  <img src="{{ assoc_data.association.logo.url }}"
+                       alt="{{ assoc_data.association.name }}"
+                       class="accordion-logo"
+                       width="32"
+                       height="32">
+                {% else %}
+                  <div class="accordion-logo-placeholder">
+                    <i class="fa-solid fa-building text-primary text-sm"></i>
+                  </div>
+                {% endif %}
+                <div class="accordion-title-wrapper">
+                  <h3 class="accordion-title">{{ assoc_data.association.name }}</h3>
+                  <p class="text-sm text-muted">
+                    {{ assoc_data.cotisations|length }} cotisation
+                    {% if assoc_data.cotisations|length > 1 %}s{% endif %}
+                    • {{ assoc_data.total|floatformat:0 }} FCFA
+                  </p>
+                </div>
+                <span class="badge badge-error flex-shrink-0">{{ assoc_data.association.get_type_display }}</span>
+              </summary>
+              <div class="accordion-content">
+                {% for cotisation in assoc_data.cotisations %}
+                  <div class="cotisation-item-wrapper">
+                    <div class="cotisation-item">
+                      <div class="flex-1 min-w-0 ">
+                        <div class="cotisation-item-info mb-1">
+                          <i class="fa-solid fa-money-bill-wave text-error text-sm"></i>
+                          <span class="font-semibold text-sm truncate">{{ cotisation.type_cotisation }}</span>
+                        </div>
+                        <div class="cotisation-item-meta text-xs text-muted">
+                          <span>
+                            <i class="fa-solid fa-calendar"></i>
+                            {{ cotisation.date_echeance|date:"d/m/Y" }}
+                          </span>
+                          {% if cotisation.date_echeance < today %}
+                            <span class="text-error font-semibold">
+                              <i class="fa-solid fa-exclamation-triangle"></i>
+                              En retard
+                            </span>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="text-right flex-shrink-0">
+                        <p class="font-bold text-error mb-1">{{ cotisation.montant|floatformat:0 }} FCFA</p>
+                        <a href="{% url 'mboa_assoc_app:effectuer_paiement' cotisation.id %}"
+                           class="btn btn-error btn-sm">
+                          <i class="fa-solid fa-credit-card"></i>
+                          Payer
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </details>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    <!-- <div class="card mb-6">
+      <div class="card-header flex-between">
+        <div>
+          <h2 class="text-xl font-bold">Mes Associations</h2>
+          {% if associations %}
+            <p class="text-sm text-muted">
+              {{ associations|length }} association
+              {% if associations|length > 1 %}s{% endif %}
+            </p>
+          {% endif %}
+        </div>
+        <div class="flex gap-2 items-center">
+          <input type="text" id="filterAssociations" placeholder="Rechercher..." class="form-input filter-input">
+          <select id="filterRole" class="form-select filter-input">
+            <option value="">Tous les rôles</option>
+            <option value="PRESIDENT">Président</option>
+            <option value="TRESORIER">Trésorier</option>
+            <option value="MEMBRE">Membre</option>
+          </select>
+          <button type="button" onclick="openModal('creerAssociationModal')" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> Créer
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if associations %}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="associationsList">
+            {% for adhesion in associations %}
+              <div class="association-card card border hover:shadow-lg transition-shadow" data-name="{{ adhesion.association.name|lower }}" data-role="{{ adhesion.role }}">
+                <div class="card-body">
+                  <div class="flex-between mb-3">
+                    <h3 class="font-bold text-lg">{{ adhesion.association.name }}</h3>
+                    <span class="badge {% if adhesion.role == 'PRESIDENT' %}badge-primary{% elif adhesion.role == 'TRESORIER' %}badge-success{% else %}badge-secondary{% endif %}">
+                      {{ adhesion.get_role_display }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-muted mb-4">{{ adhesion.association.get_type_display }}</p>
+                  <div class="flex gap-2">
+                    <a href="{% url 'mboa_assoc_app:association_dashboard' adhesion.association.id %}" class="btn btn-primary btn-sm flex-1">
+                      <i class="fa-solid fa-chart-line"></i>
+                      Dashboard
+                    </a>
+                    <a href="{% url 'mboa_assoc_app:liste_cotisations' adhesion.association.id %}" class="btn btn-outline btn-sm">
+                      <i class="fa-solid fa-money-bill-wave"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <div id="noAssociationsFound" class="text-center py-8 hidden">
+            <i class="fa-solid fa-search text-4xl text-muted mb-3"></i>
+            <p class="text-muted">Aucune association trouvée</p>
+          </div>
+        {% else %}
+          <div class="text-center py-8">
+            <i class="fa-solid fa-users text-6xl text-muted mb-4"></i>
+            <p class="text-muted mb-4">Aucune association</p>
+            <button type="button" onclick="openModal('creerAssociationModal')" class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i>
+              Créer ma première association
+            </button>
+          </div>
+        {% endif %}
+      </div>
+</div> -->
+    <!-- 📊 INFOS SECONDAIRES (repliable) -->
+    <details class="card">
+      <summary class="card-header cursor-pointer">
+        <h2 class="text-lg font-bold">Mes informations</h2>
+      </summary>
+      <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="info-card">
+            <div class="flex items-center gap-3 mb-2">
+              <i class="fa-solid fa-phone text-primary"></i>
+              <span class="font-semibold">Téléphone</span>
+            </div>
+            <p class="text-lg">{{ user.telephone }}</p>
+            {% if phone_badge %}
+              <span class="badge badge-{{ phone_badge.type }} mt-2">
+                <i class="fa-solid fa-{{ phone_badge.icon }}"></i>
+                {{ phone_badge.text }}
+              </span>
+            {% endif %}
+          </div>
+          <div class="info-card">
+            <div class="flex items-center gap-3 mb-2">
+              <i class="fa-solid fa-location-dot text-success"></i>
+              <span class="font-semibold">Localisation</span>
+            </div>
+            <p class="text-lg">{{ user.ville|default:'Non défini' }}</p>
+            {% if user.quartier %}<p class="text-sm text-muted">{{ user.quartier }}</p>{% endif %}
+          </div>
+          <div class="info-card">
+            <div class="flex items-center gap-3 mb-2">
+              <i class="fa-solid fa-calendar text-accent"></i>
+              <span class="font-semibold">Membre depuis</span>
+            </div>
+            <p class="text-lg">{{ inscription_date }}</p>
+          </div>
+        </div>
+        {% if not user.ville or not user.quartier %}
+          <div class="warning-card">
+            <p class="text-warning font-semibold mb-2">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              Profil incomplet
+            </p>
+            <p class="text-sm text-muted mb-3">Complétez vos informations pour une meilleure expérience</p>
+            <a href="{% url 'mboa_assoc_app:profile' %}"
+               class="btn btn-warning btn-sm">
+              <i class="fa-solid fa-pen-to-square"></i>
+              Compléter mon profil
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </details>
+  </div>
+  {% include 'modals/create_association.html' %}
+{% endblock content %}
+{% block extra_js %}
+  <script>
+  // Filtre pour les cotisations avec accordions
+  const filterCotisations = document.getElementById('filterCotisations');
+  if (filterCotisations) {
+    filterCotisations.addEventListener('input', function (e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const accordions = document.querySelectorAll('.accordion-item');
+
+      accordions.forEach(accordion => {
+        const associationName = accordion.dataset.association;
+        if (associationName.includes(searchTerm)) {
+          accordion.style.display = '';
+          // Auto-ouvrir l'accordion si recherche active
+          if (searchTerm && !accordion.hasAttribute('open')) {
+            accordion.setAttribute('open', '');
+          }
+        } else {
+          accordion.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Filtres pour les associations
+  const filterAssociations = document.getElementById('filterAssociations');
+  const filterRole = document.getElementById('filterRole');
+  const noResultsMsg = document.getElementById('noAssociationsFound');
+
+  function filterAssociationCards() {
+    const searchTerm = filterAssociations ? filterAssociations.value.toLowerCase() : '';
+    const roleFilter = filterRole ? filterRole.value : '';
+    const cards = document.querySelectorAll('.association-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const name = card.dataset.name;
+      const role = card.dataset.role;
+
+      const matchesSearch = !searchTerm || name.includes(searchTerm);
+      const matchesRole = !roleFilter || role === roleFilter;
+
+      if (matchesSearch && matchesRole) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (noResultsMsg) {
+      if (visibleCount === 0 && cards.length > 0) {
+        noResultsMsg.style.display = 'block';
+        document.getElementById('associationsList').style.display = 'none';
+      } else {
+        noResultsMsg.style.display = 'none';
+        document.getElementById('associationsList').style.display = '';
+      }
+    }
+  }
+
+  if (filterAssociations) {
+    filterAssociations.addEventListener('input', filterAssociationCards);
+  }
+
+  if (filterRole) {
+    filterRole.addEventListener('change', filterAssociationCards);
+  }
+  </script>
+{% endblock extra_js %}

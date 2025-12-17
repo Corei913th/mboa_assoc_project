@@ -15,7 +15,7 @@
             </a>
         </div>
 
-        {% if user_adhesion.role == 'PRESIDENT' and membre != user %}
+        {% if adhesion_utilisateur.role == 'PRESIDENT' and membre != user %}
         <div class="flex gap-sm">
             <a href="#" class="btn btn-outline">
                 <i class="fa-solid fa-message"></i>
@@ -198,7 +198,7 @@
     {% endif %}
 
     <!-- Notes (pour président) -->
-    {% if user_adhesion.role == 'PRESIDENT' %}
+    {% if adhesion_utilisateur.role == 'PRESIDENT' %}
     <div class="profile-card">
         <h2 class="text-xl font-semibold mb-md">Notes (privées)</h2>
         <textarea class="input w-full h-32" placeholder="Ajoutez des notes privées sur ce membre..."></textarea>

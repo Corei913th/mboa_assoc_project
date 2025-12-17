@@ -1,181 +1,166 @@
 {% extends 'base_with_sidebar.html' %}
 {% load static %}
-
 {% block title %}Mon Profil - Mboa Association{% endblock %}
-
 {% block content %}
-<div style="max-width: 1400px; margin: 0 auto; padding: var(--spacing-xl) var(--spacing-md);">
-
-  <!-- Messages de feedback -->
-  {% if messages %}
-  {% for message in messages %}
-  <div
-    class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}"
-    style="margin-bottom: var(--spacing-lg);">
-    <i
-      class="fa-solid {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' %}fa-xmark{% else %}fa-circle-info{% endif %} alert-icon"></i>
-    <div class="alert-content">{{ message }}</div>
-  </div>
-  {% endfor %}
-  {% endif %}
-
-  <!-- Layout 2 COLONNES sur desktop -->
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-
-    <!-- Sur desktop: 2 colonnes (380px | 1fr) -->
-    <style>
+  <div style="max-width: 1400px;
+              margin: 0 auto;
+              padding: var(--spacing-xl) var(--spacing-md)">
+    <!-- Messages de feedback -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}"
+             style="margin-bottom: var(--spacing-lg)">
+          <i class="fa-solid {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' %}fa-xmark{% else %}fa-circle-info{% endif %} alert-icon"></i>
+          <div class="alert-content">{{ message }}</div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <!-- Layout 2 COLONNES sur desktop -->
+    <div style="display: grid;
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg)">
+      <!-- Sur desktop: 2 colonnes (380px | 1fr) -->
+      <style>
       @media (min-width: 1024px) {
         .profile-grid {
           grid-template-columns: 380px 1fr !important;
         }
       }
-    </style>
-
-    <div class="profile-grid" style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-
-      <!-- ========== COLONNE GAUCHE : Identité + Infos ========== -->
-      <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
-
-        <!-- En-tête profil -->
-        <div class="profile-header">
-          <div class="profile-avatar-wrapper">
-            <div class="profile-avatar">
-              {% if membre.photo_profil %}
-              <img src="{{ membre.photo_profil.url }}" alt="Photo de profil">
-              {% else %}
-              <i class="fa-solid fa-user icon-primary" style="font-size: 48px;"></i>
+      </style>
+      <div class="profile-grid"
+           style="display: grid;
+                  grid-template-columns: 1fr;
+                  gap: var(--spacing-lg)">
+        <!-- ========== COLONNE GAUCHE : Identité + Infos ========== -->
+        <div style="display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-lg)">
+          <!-- En-tête profil -->
+          <div class="profile-header">
+            <div class="profile-avatar-wrapper">
+              <div class="profile-avatar">
+                {% if membre.photo_profil %}
+                  <img src="{{ membre.photo_profil.url }}" alt="Photo de profil">
+                {% else %}
+                  <i class="fa-solid fa-user icon-primary" style="font-size: 48px;"></i>
+                {% endif %}
+              </div>
+              {% if membre.telephone_verifie %}
+                <div class="profile-verified-badge" title="Téléphone vérifié">
+                  <i class="fa-solid fa-check icon-white" style="font-size: 16px;"></i>
+                </div>
               {% endif %}
             </div>
+            <h1 class="profile-name">
+              {% if membre.get_full_name %}
+                {{ membre.get_full_name }}
+              {% else %}
+                Profil incomplet
+              {% endif %}
+            </h1>
+            <p class="profile-phone">{{ membre.telephone }}</p>
             {% if membre.telephone_verifie %}
-            <div class="profile-verified-badge" title="Téléphone vérifié">
-              <i class="fa-solid fa-check icon-white" style="font-size: 16px;"></i>
-            </div>
+              <span class="badge badge-success">
+                <i class="fa-solid fa-shield-halved badge-icon icon-success"></i>
+                Identité vérifiée
+              </span>
+            {% else %}
+              <span class="badge badge-warning">
+                <i class="fa-solid fa-triangle-exclamation badge-icon icon-warning"></i>
+                En attente de vérification
+              </span>
             {% endif %}
           </div>
-
-          <h1 class="profile-name">
-            {% if membre.get_full_name %}
-            {{ membre.get_full_name }}
-            {% else %}
-            Profil incomplet
-            {% endif %}
-          </h1>
-          <p class="profile-phone">{{ membre.telephone }}</p>
-
-          {% if membre.telephone_verifie %}
-          <span class="badge badge-success">
-            <i class="fa-solid fa-shield-halved badge-icon icon-success"></i>
-            Identité vérifiée
-          </span>
-          {% else %}
-          <span class="badge badge-warning">
-            <i class="fa-solid fa-triangle-exclamation badge-icon icon-warning"></i>
-            En attente de vérification
-          </span>
-          {% endif %}
-        </div>
-
-        <!-- Notice de sécurité -->
-        <div class="profile-security-notice">
+          <!-- <div class="profile-security-notice">
           <i class="fa-solid fa-lock profile-security-icon icon-info"></i>
           <div>
             <strong>Vos données sont protégées.</strong> Votre numéro de téléphone est votre identifiant unique et ne
             peut pas être modifié. Seules les informations marquées comme modifiables peuvent être changées.
           </div>
-        </div>
-
-        <!-- Identité sécurisée -->
-        <div class="profile-section">
-          <div class="profile-section-header">
-            <h2 class="profile-section-title">
-              <i class="fa-solid fa-shield-halved profile-section-icon icon-primary"></i>
-              Identité sécurisée
-            </h2>
-          </div>
-
-          <div class="profile-field">
-            <div class="profile-field-label">
-              <i class="fa-solid fa-lock icon-muted" style="font-size: 14px;"></i>
-              Numéro de téléphone
+</div>-->
+          <!-- Identité sécurisée -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <h2 class="profile-section-title">
+                <i class="fa-solid fa-shield-halved profile-section-icon icon-primary"></i>
+                Identité sécurisée
+              </h2>
             </div>
-            <div class="profile-field-value">{{ membre.telephone }}</div>
-            <div class="profile-field-locked">
-              <i class="fa-solid fa-lock profile-field-locked-icon icon-muted"></i>
-              Champ verrouillé - Identifiant unique
+            <div class="profile-field">
+              <div class="profile-field-label">
+                <i class="fa-solid fa-lock icon-muted" style="font-size: 14px;"></i>
+                Numéro de téléphone
+              </div>
+              <div class="profile-field-value">{{ membre.telephone }}</div>
+              <div class="profile-field-locked">
+                <i class="fa-solid fa-lock profile-field-locked-icon icon-muted"></i>
+                Champ verrouillé - Identifiant unique
+              </div>
             </div>
-          </div>
-
-          <div class="profile-field">
-            <div class="profile-field-label">
-              <i class="fa-solid fa-certificate icon-muted" style="font-size: 14px;"></i>
-              Statut de vérification
-            </div>
-            <div class="profile-field-value">
-              {% if membre.telephone_verifie %}
-              Téléphone vérifié le {{ membre.date_verification_telephone|date:"d/m/Y" }}
-              {% else %}
-              Non vérifié
-              {% endif %}
-            </div>
-            <div class="profile-field-locked">
-              <i class="fa-solid fa-circle-info profile-field-locked-icon icon-muted"></i>
-              Information automatique
+            <div class="profile-field">
+              <div class="profile-field-label">
+                <i class="fa-solid fa-certificate icon-muted" style="font-size: 14px;"></i>
+                Statut de vérification
+              </div>
+              <div class="profile-field-value">
+                {% if membre.telephone_verifie %}
+                  Téléphone vérifié le {{ membre.date_verification_telephone|date:"d/m/Y" }}
+                {% else %}
+                  Non vérifié
+                {% endif %}
+              </div>
+              <div class="profile-field-locked">
+                <i class="fa-solid fa-circle-info profile-field-locked-icon icon-muted"></i>
+                Information automatique
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Informations du compte -->
-        <div class="profile-section">
-          <div class="profile-section-header">
-            <h2 class="profile-section-title">
-              <i class="fa-solid fa-circle-info profile-section-icon icon-primary"></i>
-              Informations du compte
-            </h2>
-            <span class="text-xs text-muted">Lecture seule</span>
-          </div>
-
-          <div class="profile-field">
-            <div class="profile-field-label">Membre depuis</div>
-            <div class="profile-field-value">{{ membre.date_joined|date:"d F Y" }}</div>
-          </div>
-
-          {% if membre.derniere_connexion %}
-          <div class="profile-field">
-            <div class="profile-field-label">Dernière connexion</div>
-            <div class="profile-field-value">{{ membre.derniere_connexion|date:"d/m/Y à H:i" }}</div>
-          </div>
-          {% endif %}
-
-          <div class="profile-field">
-            <div class="profile-field-label">Statut du compte</div>
-            <div class="profile-field-value">
-              <span class="badge badge-success">
-                <i class="fa-solid fa-circle-check badge-icon icon-success"></i>
-                Actif
-              </span>
+          <!-- Informations du compte -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <h2 class="profile-section-title">
+                <i class="fa-solid fa-circle-info profile-section-icon icon-primary"></i>
+                Informations du compte
+              </h2>
+              <span class="text-xs text-muted">Lecture seule</span>
+            </div>
+            <div class="profile-field">
+              <div class="profile-field-label">Membre depuis</div>
+              <div class="profile-field-value">{{ membre.date_joined|date:"d F Y" }}</div>
+            </div>
+            {% if membre.derniere_connexion %}
+              <div class="profile-field">
+                <div class="profile-field-label">Dernière connexion</div>
+                <div class="profile-field-value">{{ membre.derniere_connexion|date:"d/m/Y à H:i" }}</div>
+              </div>
+            {% endif %}
+            <div class="profile-field">
+              <div class="profile-field-label">Statut du compte</div>
+              <div class="profile-field-value">
+                <span class="badge badge-success">
+                  <i class="fa-solid fa-circle-check badge-icon icon-success"></i>
+                  Actif
+                </span>
+              </div>
             </div>
           </div>
         </div>
-
-      </div>
-
-      <!-- ========== COLONNE DROITE : Formulaire + Associations ========== -->
-      <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
-
-        <!-- Informations modifiables -->
-        <div class="profile-section">
-          <div class="profile-section-header">
-            <h2 class="profile-section-title">
-              <i class="fa-solid fa-pen-to-square profile-section-icon icon-primary"></i>
-              Informations personnelles
-            </h2>
-            <span class="text-xs text-muted">Modifiable</span>
-          </div>
-
-          <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <style>
+        <!-- ========== COLONNE DROITE : Formulaire + Associations ========== -->
+        <div style="display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-lg)">
+          <!-- Informations modifiables -->
+          <div class="profile-section">
+            <div class="profile-section-header">
+              <h2 class="profile-section-title">
+                <i class="fa-solid fa-pen-to-square profile-section-icon icon-primary"></i>
+                Informations personnelles
+              </h2>
+              <span class="text-xs text-muted">Modifiable</span>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <style>
               @media (min-width: 768px) {
                 .form-grid-2 {
                   display: grid;
@@ -183,80 +168,100 @@
                   gap: var(--spacing-lg);
                 }
               }
-            </style>
-
-            <div class="form-grid-2">
+              </style>
+              <div class="form-grid-2">
+                <div class="profile-field">
+                  <label for="{{ form.first_name.id_for_label }}"
+                         class="form-label form-label-required">Prénom</label>
+                  {{ form.first_name }}
+                  <span class="form-help">Votre prénom</span>
+                  {% if form.first_name.errors %}
+                    {% for error in form.first_name.errors %}
+                      <div class="form-error">
+                        <i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="profile-field">
+                  <label for="{{ form.last_name.id_for_label }}"
+                         class="form-label form-label-required">Nom</label>
+                  {{ form.last_name }}
+                  <span class="form-help">Votre nom</span>
+                  {% if form.last_name.errors %}
+                    {% for error in form.last_name.errors %}
+                      <div class="form-error">
+                        <i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="profile-field">
+                  <label for="{{ form.ville.id_for_label }}" class="form-label">Ville</label>
+                  {{ form.ville }}
+                  <span class="form-help">Votre ville au Cameroun</span>
+                  {% if form.ville.errors %}
+                    {% for error in form.ville.errors %}
+                      <div class="form-error">
+                        <i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="profile-field">
+                  <label for="{{ form.quartier.id_for_label }}" class="form-label">Quartier</label>
+                  {{ form.quartier }}
+                  <span class="form-help">Votre quartier</span>
+                  {% if form.quartier.errors %}
+                    {% for error in form.quartier.errors %}
+                      <div class="form-error">
+                        <i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
               <div class="profile-field">
-                <label for="{{ form.first_name.id_for_label }}" class="form-label form-label-required">Prénom</label>
-                {{ form.first_name }}
-                <span class="form-help">Votre prénom</span>
-                {% if form.first_name.errors %}
-                {% for error in form.first_name.errors %}
-                <div class="form-error"><i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}</div>
-                {% endfor %}
+                <label for="{{ form.photo_profil.id_for_label }}" class="form-label">Photo de profil</label>
+                {% if membre.photo_profil %}
+                  <div class="existing-photo-container"
+                       style="margin-bottom: var(--spacing-md)">
+                    <p class="text-sm text-muted" style="margin-bottom: var(--spacing-sm);">Photo actuelle :</p>
+                    <img src="{{ membre.photo_profil.url }}"
+                         alt="Photo"
+                         style="width: 120px;
+                                height: 120px;
+                                object-fit: cover;
+                                border-radius: var(--radius-lg);
+                                border: 2px solid rgb(var(--border))">
+                  </div>
+                {% endif %}
+                {{ form.photo_profil }}
+                <span class="form-help"><i class="fa-solid fa-circle-info icon-info"></i> JPEG, PNG. Max 5MB</span>
+                {% if form.photo_profil.errors %}
+                  {% for error in form.photo_profil.errors %}
+                    <div class="form-error">
+                      <i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}
+                    </div>
+                  {% endfor %}
                 {% endif %}
               </div>
-
-              <div class="profile-field">
-                <label for="{{ form.last_name.id_for_label }}" class="form-label form-label-required">Nom</label>
-                {{ form.last_name }}
-                <span class="form-help">Votre nom</span>
-                {% if form.last_name.errors %}
-                {% for error in form.last_name.errors %}
-                <div class="form-error"><i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}</div>
-                {% endfor %}
-                {% endif %}
+              <div style="display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          margin-top: var(--spacing-xl);
+                          padding-top: var(--spacing-lg);
+                          border-top: 1px solid rgb(var(--border))">
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="window.location.reload()">Annuler</button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa-solid fa-check icon-white"></i> Enregistrer
+                </button>
               </div>
-
-              <div class="profile-field">
-                <label for="{{ form.ville.id_for_label }}" class="form-label">Ville</label>
-                {{ form.ville }}
-                <span class="form-help">Votre ville au Cameroun</span>
-                {% if form.ville.errors %}
-                {% for error in form.ville.errors %}
-                <div class="form-error"><i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}</div>
-                {% endfor %}
-                {% endif %}
-              </div>
-
-              <div class="profile-field">
-                <label for="{{ form.quartier.id_for_label }}" class="form-label">Quartier</label>
-                {{ form.quartier }}
-                <span class="form-help">Votre quartier</span>
-                {% if form.quartier.errors %}
-                {% for error in form.quartier.errors %}
-                <div class="form-error"><i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}</div>
-                {% endfor %}
-                {% endif %}
-              </div>
-            </div>
-
-            <div class="profile-field">
-              <label for="{{ form.photo_profil.id_for_label }}" class="form-label">Photo de profil</label>
-              {% if membre.photo_profil %}
-              <div class="existing-photo-container" style="margin-bottom: var(--spacing-md);">
-                <p class="text-sm text-muted" style="margin-bottom: var(--spacing-sm);">Photo actuelle :</p>
-                <img src="{{ membre.photo_profil.url }}" alt="Photo" style="width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-lg); border: 2px solid rgb(var(--border));">
-              </div>
-              {% endif %}
-              {{ form.photo_profil }}
-              <span class="form-help"><i class="fa-solid fa-circle-info icon-info"></i> JPEG, PNG. Max 5MB</span>
-              {% if form.photo_profil.errors %}
-              {% for error in form.photo_profil.errors %}
-              <div class="form-error"><i class="fa-solid fa-circle-xmark icon-error"></i> {{ error }}</div>
-              {% endfor %}
-              {% endif %}
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid rgb(var(--border));">
-              <button type="button" class="btn btn-secondary" onclick="window.location.reload()">Annuler</button>
-              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check icon-white"></i> Enregistrer</button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Mes Associations -->
-        <div class="profile-section">
+            </form>
+          </div>
+          <!-- <div class="profile-section">
           <div class="profile-section-header">
             <h2 class="profile-section-title">
               <i class="fa-solid fa-users profile-section-icon icon-primary"></i>
@@ -271,17 +276,13 @@
               le moment</p>
             <p class="text-xs text-muted">Rejoignez ou créez une association pour commencer à gérer vos cotisations</p>
           </div>
+</div> -->
         </div>
-
       </div>
-
     </div>
   </div>
-
-</div>
-
-<script src="{% static 'js/form-validation.js' %}"></script>
-<script>
+  <script src="{% static 'js/form-validation.js' %}"></script>
+  <script>
   document.addEventListener('DOMContentLoaded', function () {
     const photoInput = document.querySelector('input[name="photo_profil"]');
     const existingPhotoContainer = document.querySelector('.existing-photo-container');
@@ -414,5 +415,5 @@
       }
     }
   });
-</script>
+  </script>
 {% endblock %}

@@ -72,18 +72,12 @@ def association_detail(request, id):
     president = association.get_president()
     treasurer = association.get_treasurer()
     
-    # Vérifier les permissions
-    can_manage_settings = AssociationService.can_manage_settings(association, request.user)
-    can_manage_members = AssociationService.can_manage_members(association, request.user)
-    
     context = {
         'association': association,
-        'user_member': user_adhesion,
+        'adhesion': user_adhesion,
         'members': members,
         'president': president,
         'treasurer': treasurer,
-        'can_manage_settings': can_manage_settings,
-        'can_manage_members': can_manage_members,
         'page_title': association.name
     }
     return render(request, 'associations/association_detail.html', context)
@@ -97,8 +91,19 @@ def association_settings(request, id):
     """
     association = get_object_or_404(Association, id=id, is_active=True)
     
+    # Récupérer l'adhésion de l'utilisateur
+    try:
+        adhesion = Adhesion.objects.get(
+            association=association,
+            membre=request.user,
+            is_active=True
+        )
+    except Adhesion.DoesNotExist:
+        messages.error(request, "Vous n'êtes pas membre de cette association")
+        return redirect('mboa_assoc_app:dashboard')
+    
     # Vérifier que l'utilisateur est président
-    if not AssociationService.can_manage_settings(association, request.user):
+    if adhesion.role != Role.PRESIDENT:
         messages.error(request, "Seul le président peut modifier les paramètres")
         return redirect('mboa_assoc_app:association_detail', id=association.id)
     
@@ -136,8 +141,19 @@ def manage_members(request, id):
     """
     association = get_object_or_404(Association, id=id, is_active=True)
     
+    # Récupérer l'adhésion de l'utilisateur
+    try:
+        adhesion = Adhesion.objects.get(
+            association=association,
+            membre=request.user,
+            is_active=True
+        )
+    except Adhesion.DoesNotExist:
+        messages.error(request, "Vous n'êtes pas membre de cette association")
+        return redirect('mboa_assoc_app:dashboard')
+    
     # Vérifier les permissions
-    if not AssociationService.can_manage_members(association, request.user):
+    if adhesion.role not in [Role.PRESIDENT, Role.TRESORIER]:
         messages.error(request, "Vous n'avez pas la permission de gérer les membres")
         return redirect('mboa_assoc_app:association_detail', id=association.id)
     
@@ -167,12 +183,12 @@ def manage_members(request, id):
         'association': association,
         'members': members,
         'president': president,
+        'adhesion': adhesion,
         'add_member_form': add_member_form,
         'nominate_president_form': nominate_president_form,
         'nominate_treasurer_form': nominate_treasurer_form,
         'search_form': search_form,
         'available_users': available_users,
-        'is_president': AssociationService.is_president(association, request.user),
         'page_title': f'Gestion des membres - {association.name}'
     }
     return render(request, 'associations/manage_members.html', context)
@@ -324,13 +340,16 @@ def delete_association(request, id):
 
 @login_required
 def my_associations(request):
-    """
-    Liste toutes les associations de l'utilisateur
-    """
-    associations = AssociationService.get_user_associations(request.user)
+    from ..forms import AssociationForm
     
-    context = {
+    # Récupérer les adhésions (pas les associations directement)
+    associations = Adhesion.objects.filter(
+        membre=request.user,
+        is_active=True,
+        association__is_active=True
+    ).select_related('association').order_by('-date')
+    
+    return render(request, 'associations/my_associations.html', {
         'associations': associations,
-        'page_title': 'Mes associations'
-    }
-    return render(request, 'associations/my_associations.html', context)
+        'form': AssociationForm()
+    })

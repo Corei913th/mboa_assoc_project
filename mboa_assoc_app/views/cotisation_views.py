@@ -12,35 +12,27 @@ from ..services.association_service import AssociationService
 
 @login_required
 def liste_cotisations_view(request, association_id):
-    """Liste toutes les cotisations d'une association"""
+    from ..forms import CotisationForm
+    from datetime import timedelta
+    
     association = get_object_or_404(Association, id=association_id, is_active=True)
     
-    # Vérifier que l'utilisateur est membre
     try:
-        adhesion = Adhesion.objects.get(
-            association=association,
-            membre=request.user,
-            is_active=True
-        )
+        adhesion = Adhesion.objects.get(association=association, membre=request.user, is_active=True)
     except Adhesion.DoesNotExist:
         messages.error(request, "Vous n'êtes pas membre de cette association")
         return redirect('mboa_assoc_app:dashboard')
     
-    # Récupérer toutes les cotisations
-    cotisations = Cotisation.objects.filter(
-        association=association
-    ).order_by('-date_echeance')
+    cotisations = Cotisation.objects.filter(association=association).order_by('-date_echeance')
+    initial_data = {'date_echeance': (timezone.now() + timedelta(days=30)).date()}
     
-    # Vérifier si l'utilisateur peut créer des cotisations (président ou trésorier)
-    can_create = adhesion.role in [Role.PRESIDENT, Role.TRESORIER]
-    
-    context = {
+    return render(request, 'cotisations/liste.html', {
         'association': association,
         'cotisations': cotisations,
-        'can_create': can_create,
-        'adhesion': adhesion
-    }
-    return render(request, 'cotisations/liste.html', context)
+        'adhesion': adhesion,
+        'form': CotisationForm(initial=initial_data),
+        'today': timezone.now().date()
+    })
 
 
 @login_required
@@ -62,21 +54,27 @@ def creer_cotisation_view(request, association_id):
         return redirect('mboa_assoc_app:dashboard')
     
     if request.method == 'POST':
-        montant = request.POST.get('montant')
-        type_cotisation = request.POST.get('type_cotisation')
-        date_echeance = request.POST.get('date_echeance')
+        from ..forms import CotisationForm
+        form = CotisationForm(request.POST)
         
-        try:
-            cotisation = Cotisation.objects.create(
-                association=association,
-                montant=montant,
-                type_cotisation=type_cotisation,
-                date_echeance=date_echeance
-            )
-            messages.success(request, f"Cotisation '{type_cotisation}' créée avec succès")
-            return redirect('mboa_assoc_app:liste_cotisations', association_id=association.id)
-        except Exception as e:
-            messages.error(request, f"Erreur lors de la création: {str(e)}")
+        if form.is_valid():
+            try:
+                cotisation = Cotisation.objects.create(
+                    association=association,
+                    montant=form.cleaned_data['montant'],
+                    type_cotisation=form.cleaned_data['type_cotisation'],
+                    date_echeance=form.cleaned_data['date_echeance']
+                )
+                messages.success(request, f"Cotisation '{cotisation.type_cotisation}' créée avec succès")
+                
+                next_url = request.GET.get('next', '')
+                if next_url == 'dashboard':
+                    return redirect('mboa_assoc_app:association_dashboard', association_id=association.id)
+                return redirect('mboa_assoc_app:liste_cotisations', association_id=association.id)
+            except Exception as e:
+                messages.error(request, f"Erreur lors de la création: {str(e)}")
+        else:
+            messages.error(request, "Formulaire invalide. Vérifiez les informations saisies.")
     
     # Proposer une date d'échéance par défaut (30 jours)
     date_defaut = (timezone.now() + timedelta(days=30)).date()

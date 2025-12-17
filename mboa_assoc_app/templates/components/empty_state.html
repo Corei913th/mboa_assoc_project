@@ -1,0 +1,16 @@
+{% comment %}Composant: État vide réutilisable{% endcomment %}
+<div class="text-center py-8">
+  <i class="fa-solid fa-{{ icon }} text-6xl text-muted mb-4"></i>
+  <p class="text-muted mb-4">{{ message }}</p>
+  {% if action_modal %}
+  <button type="button" onclick="openModal('{{ action_modal }}')" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i>
+    {{ action_text }}
+  </button>
+  {% elif action_url %}
+  <a href="{{ action_url }}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i>
+    {{ action_text }}
+  </a>
+  {% endif %}
+</div>

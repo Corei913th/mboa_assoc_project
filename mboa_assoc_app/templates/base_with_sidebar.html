@@ -1,104 +1,107 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#10b981">
-  <meta name="description" content="Plateforme de gestion des associations camerounaises">
-  <title>{% block title %}Mboa Association{% endblock %}</title>
-
-  <!-- Tailwind CSS (compilé) -->
-  <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
-
-  <!-- Font Awesome (local) -->
-  <link rel="stylesheet" href="{% static 'css/fontawesome-custom.css' %}">
-  <link rel="stylesheet" href="{% static 'css/fontawesome-icons.min.css' %}">
-
-  <!-- Design System -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/icons.css' %}">
-
-  {% block extra_css %}{% endblock %}
-</head>
-
-<body>
-  <div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <!-- Header -->
-      <div class="sidebar-header">
-        <a href="{% url 'mboa_assoc_app:dashboard' %}" class="sidebar-brand">
-          <i class="fa-solid fa-building sidebar-nav-icon icon-primary"></i>
-          Mboa Assoc
-        </a>
-      </div>
-
-      <!-- Navigation -->
-      <nav class="sidebar-nav">
-        <a href="{% url 'mboa_assoc_app:dashboard' %}"
-          class="sidebar-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-          <i class="fa-solid fa-house sidebar-nav-icon icon-primary"></i>
-          Tableau de bord
-        </a>
-
-        <a href="{% url 'mboa_assoc_app:profile' %}"
-          class="sidebar-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-          <i class="fa-solid fa-user sidebar-nav-icon icon-primary"></i>
-          Mon Profil
-        </a>
-
-        <div class="separator" style="margin: var(--spacing-md) 0;">
-          <span class="separator-text">Associations</span>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#10b981">
+    <meta name="description"
+          content="Plateforme de gestion des associations camerounaises">
+    <title>
+      {% block title %}
+        Mboa Association
+      {% endblock title %}
+    </title>
+    <!-- Tailwind CSS (compilé) -->
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+    <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="{% static 'css/fontawesome-custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-icons.min.css' %}">
+    <!-- Design System -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Header -->
+        <div class="sidebar-header">
+          <a href="{% url 'mboa_assoc_app:dashboard' %}" class="sidebar-brand">
+            <i class="fa-solid fa-building sidebar-nav-icon icon-primary"></i>
+            Mboa Assoc
+          </a>
         </div>
-
-        <a href="{% url 'mboa_assoc_app:my_associations' %}" class="sidebar-nav-item">
-          <i class="fa-solid fa-users sidebar-nav-icon icon-accent"></i>
-          Mes Associations
-        </a>
-
-        <a href="{% url 'mboa_assoc_app:mes_invitations' %}" class="sidebar-nav-item">
-          <i class="fa-solid fa-envelope sidebar-nav-icon icon-accent"></i>
-          Mes Invitations
-          {% if invitations_en_attente_count > 0 %}
-          <span class="badge badge-accent badge-pulse">{{ invitations_en_attente_count }}</span>
-          {% endif %}
-        </a>
-
-        <a href="#" class="sidebar-nav-item">
-          <i class="fa-solid fa-coins sidebar-nav-icon icon-warning"></i>
-          Cotisations
-        </a>
-      </nav>
-
-      <!-- Footer -->
-      <div class="sidebar-footer">
-        <a href="{% url 'mboa_assoc_app:logout' %}" class="btn btn-secondary btn-full">
-          <i class="fa-solid fa-right-from-bracket sidebar-nav-icon icon-primary"></i>
-          Déconnexion
-        </a>
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+          <a href="{% url 'mboa_assoc_app:dashboard' %}"
+             class="sidebar-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="fa-solid fa-house sidebar-nav-icon icon-primary"></i>
+            Tableau de bord
+          </a>
+          <a href="{% url 'mboa_assoc_app:profile' %}"
+             class="sidebar-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="fa-solid fa-user sidebar-nav-icon icon-primary"></i>
+            Mon Profil
+          </a>
+          <div class="separator" style="margin: var(--spacing-md) 0;">
+            <span class="separator-text">Associations</span>
+          </div>
+          <a href="{% url 'mboa_assoc_app:my_associations' %}"
+             class="sidebar-nav-item">
+            <i class="fa-solid fa-users sidebar-nav-icon icon-primary"></i>
+            Mes Associations
+          </a>
+          <a href="{% url 'mboa_assoc_app:mes_invitations' %}"
+             class="sidebar-nav-item">
+            <i class="fa-solid fa-envelope sidebar-nav-icon icon-primary"></i>
+            Mes Invitations
+            {% if invitations_en_attente_count > 0 %}
+              <span class="badge badge-accent badge-pulse">{{ invitations_en_attente_count }}</span>
+            {% endif %}
+          </a>
+          <!-- Cotisations sera accessible via chaque association -->
+          <!-- Pas de lien global car les cotisations sont par association -->
+        </nav>
+        <!-- Footer -->
+        <div class="sidebar-footer">
+          <a href="{% url 'mboa_assoc_app:logout' %}"
+             class="btn btn-secondary btn-full">
+            <i class="fa-solid fa-right-from-bracket sidebar-nav-icon icon-primary"></i>
+            Déconnexion
+          </a>
+        </div>
+      </aside>
+      <!-- Overlay pour mobile -->
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <!-- Bouton toggle pour mobile -->
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars icon-muted" style="font-size: 24px;"></i>
+      </button>
+      <!-- Main Content -->
+      <main class="main-content">
+        {% include 'components/dashboard_header.html' with page_title=page_title page_subtitle=page_subtitle header_actions=header_actions %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    {% include 'modals/confirm.html' %}
+    {% include 'modals/success.html' %}
+    {% include 'modals/error.html' %}
+    {% include 'components/toast.html' %}
+    {% if messages %}
+      <div style="display: none;">
+        {% for message in messages %}
+          <div class="django-message" data-type="{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
       </div>
-    </aside>
-
-    <!-- Overlay pour mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Bouton toggle pour mobile -->
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
-      <i class="fa-solid fa-bars icon-muted" style="font-size: 24px;"></i>
-    </button>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      {% block content %}{% endblock %}
-    </main>
-  </div>
-
-  <!-- Sidebar Script -->
-  <script src="{% static 'js/sidebar.js' %}"></script>
-
-  {% block extra_js %}{% endblock %}
-</body>
-
+    {% endif %}
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/modals.js' %}"></script>
+    <script src="{% static 'js/modals-helpers.js' %}"></script>
+    <script src="{% static 'js/toast.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

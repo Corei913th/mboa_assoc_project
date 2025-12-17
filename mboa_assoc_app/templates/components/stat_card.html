@@ -1,0 +1,19 @@
+{% comment %}Composant: Carte de statistique réutilisable{% endcomment %}
+<a href="{{ url }}" class="stat-card">
+  <div class="stat-icon bg-{{ color }}-light">
+    <i class="fa-solid fa-{{ icon }} icon-{{ color }}"></i>
+  </div>
+  <div class="stat-content">
+    <p class="stat-label">{{ label }}</p>
+    <p class="stat-value">{{ value }}</p>
+    {% if badge %}
+    <span class="badge badge-{{ badge.type }}">
+      <i class="fa-solid fa-{{ badge.icon }} badge-icon"></i>
+      {{ badge.text }}
+    </span>
+    {% endif %}
+    {% if subtitle %}
+    <p class="stat-subtitle">{{ subtitle }}</p>
+    {% endif %}
+  </div>
+</a>

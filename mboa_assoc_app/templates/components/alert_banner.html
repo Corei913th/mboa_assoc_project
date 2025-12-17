@@ -1,0 +1,27 @@
+{% comment %}Composant: Bannière d'alerte réutilisable{% endcomment %}
+<div
+  class="welcome-card {% if type == 'warning' %}border-warning bg-warning-light{% else %}bg-success-light{% endif %}">
+  <i class="fa-solid fa-{{ icon }} icon-{{ type }}" style="font-size: 64px;"></i>
+  <h2 class="heading-2 mb-md">{{ title }}</h2>
+  <p class="text-muted mb-lg" style="max-width: 600px; margin: 0 auto;">{{ message }}</p>
+  {% if action_url %}
+  <a href="{{ action_url }}" class="btn btn-primary btn-lg">
+    <i class="fa-solid fa-pen-to-square"></i>
+    {{ action_text }}
+  </a>
+  {% endif %}
+</div>
+
+<style>
+  .border-warning {
+    border: 2px solid rgb(var(--warning) / 0.3);
+  }
+
+  .bg-warning-light {
+    background: linear-gradient(135deg, rgb(var(--warning-light)) 0%, rgb(254 243 199) 100%);
+  }
+
+  .bg-success-light {
+    background: linear-gradient(135deg, rgb(var(--success-light)) 0%, rgb(220 252 231) 100%);
+  }
+</style>

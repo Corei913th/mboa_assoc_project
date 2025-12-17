@@ -686,7 +686,7 @@ class Paiement(models.Model):
         decimal_places=2, 
         validators=[MinValueValidator(Decimal('0.00'))]
     )
-    date_paiement = models.DateField(auto_now_add=True)
+    date_paiement = models.DateTimeField(auto_now_add=True)
     reference = models.CharField(max_length=100, unique=True)
     statut = models.ForeignKey(
         PaiementStatutModel, 

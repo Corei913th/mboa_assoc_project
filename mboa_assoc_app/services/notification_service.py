@@ -17,7 +17,7 @@ class NotificationService:
                 membre=membre_invite,
                 type_notification=TypeNotification.NOUVEAU_MEMBRE,
                 titre="Nouvelle invitation",
-                message=f"{invitation.createur.get_full_name()} vous a invité à rejoindre l'association {invitation.association.nom}"
+                message=f"{invitation.createur.get_full_name()} vous a invité à rejoindre l'association {invitation.association.name}"
             )
             
         except Membre.DoesNotExist:
@@ -35,5 +35,5 @@ class NotificationService:
                     membre=adhesion.membre,
                     type_notification=TypeNotification.NOUVEAU_MEMBRE,
                     titre="Nouveau membre",
-                    message=f"{nouveau_membre.get_full_name()} a rejoint l'association {association.nom}"
+                    message=f"{nouveau_membre.get_full_name()} a rejoint l'association {association.name}"
                 )

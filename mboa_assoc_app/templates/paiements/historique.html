@@ -1,78 +1,157 @@
 {% extends 'base_with_sidebar.html' %}
-
-{% block title %}Historique des paiements - {{ association.name }}{% endblock %}
-
+{% block title %}
+  Historique des paiements - {{ association.name }}
+{% endblock title %}
 {% block content %}
-<div class="container-fluid py-4">
-  <div class="card">
-    <div class="card-header">
-      <div class="flex-between">
-        <div>
-          <h1 class="text-2xl font-bold">Historique des paiements</h1>
-          <p class="text-muted">{{ association.name }}</p>
+  <div class="dashboard-container">
+    <div class="card">
+      <div class="card-header">
+        <div class="flex-between">
+          <div>
+            <h1 class="heading-2">Historique des paiements</h1>
+            <p class="text-muted">
+              {{ association.name }} • {{ paiements|length }} paiement
+              {% if paiements|length > 1 %}s{% endif %}
+            </p>
+          </div>
+          <div class="stat-highlight">
+            <div class="stat-highlight-value">{{ total_collecte|floatformat:0 }} FCFA</div>
+            <div class="stat-highlight-label">Total collecté</div>
+          </div>
         </div>
-        <div class="text-right">
-          <div class="text-3xl font-bold text-success">{{ total_collecte|floatformat:0 }} FCFA</div>
-          <div class="text-sm text-muted">Total collecté</div>
-        </div>
       </div>
-    </div>
-
-    <div class="card-body">
-      {% if paiements %}
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Membre</th>
-              <th>Cotisation</th>
-              <th>Montant</th>
-              <th>Méthode</th>
-              <th>Statut</th>
-              <th>Référence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for paiement in paiements %}
-            <tr>
-              <td>{{ paiement.date_paiement|date:"d/m/Y H:i" }}</td>
-              <td>
-                {% if adhesion.role in 'PRESIDENT,TRESORIER' %}
-                {{ paiement.membre.get_full_name|default:paiement.membre.username }}
-                {% else %}
-                Vous
-                {% endif %}
-              </td>
-              <td>{{ paiement.cotisation.type_cotisation }}</td>
-              <td class="font-bold">{{ paiement.montant|floatformat:0 }} FCFA</td>
-              <td>
-                <span class="badge badge-info">
-                  {{ paiement.methode.get_libelle_display }}
-                </span>
-              </td>
-              <td>
-                {% if paiement.statut.statut == 'VALIDE' %}
-                <span class="badge badge-success">Validé</span>
-                {% elif paiement.statut.statut == 'EN_ATTENTE' %}
-                <span class="badge badge-warning">En attente</span>
-                {% else %}
-                <span class="badge badge-error">Échoué</span>
-                {% endif %}
-              </td>
-              <td class="text-sm text-muted">{{ paiement.reference }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="card-body">
+        {% if paiements %}
+          <div class="filters-row">
+            <input type="text"
+                   id="filterPaiements"
+                   placeholder="Rechercher..."
+                   class="form-input filter-input">
+            <select id="filterMethode" class="form-select filter-input">
+              <option value="">Toutes méthodes</option>
+              <option value="MOMO">Mobile Money</option>
+              <option value="OM">Orange Money</option>
+              <option value="CASH">Cash</option>
+            </select>
+            <select id="filterStatutPaiement" class="form-select filter-input">
+              <option value="">Tous statuts</option>
+              <option value="VALIDE">Validé</option>
+              <option value="EN_ATTENTE">En attente</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Membre</th>
+                  <th>Cotisation</th>
+                  <th>Montant</th>
+                  <th>Méthode</th>
+                  <th>Statut</th>
+                  <th>Référence</th>
+                </tr>
+              </thead>
+              <tbody id="paiementsTableBody">
+                {% for paiement in paiements %}
+                  <tr class="paiement-row"
+                      data-membre="{{ paiement.membre.get_full_name|default:paiement.membre.username|lower }}"
+                      data-cotisation="{{ paiement.cotisation.type_cotisation|lower }}"
+                      data-methode="{{ paiement.methode.libelle }}"
+                      data-statut="{{ paiement.statut.statut }}"
+                      data-reference="{{ paiement.reference|lower }}">
+                    <td class="table-date">{{ paiement.date_paiement|date:"d/m/Y H:i" }}</td>
+                    <td class="table-membre">
+                      {% if adhesion.role == 'PRESIDENT' or adhesion.role == 'TRESORIER' %}
+                        {{ paiement.membre.get_full_name|default:paiement.membre.username }}
+                      {% else %}
+                        Vous
+                      {% endif %}
+                    </td>
+                    <td>{{ paiement.cotisation.type_cotisation }}</td>
+                    <td class="table-montant">{{ paiement.montant|floatformat:0 }} FCFA</td>
+                    <td>
+                      <span class="badge-methode">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        {{ paiement.methode.get_libelle_display }}
+                      </span>
+                    </td>
+                    <td>
+                      {% if paiement.statut.statut == 'VALIDE' %}
+                        <span class="badge badge-success">
+                          <i class="fa-solid fa-check"></i>
+                          Validé
+                        </span>
+                      {% elif paiement.statut.statut == 'EN_ATTENTE' %}
+                        <span class="badge badge-warning">
+                          <i class="fa-solid fa-clock"></i>
+                          En attente
+                        </span>
+                      {% else %}
+                        <span class="badge badge-error">
+                          <i class="fa-solid fa-xmark"></i>
+                          Échoué
+                        </span>
+                      {% endif %}
+                    </td>
+                    <td class="table-reference">{{ paiement.reference }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <i class="fa-solid fa-receipt empty-state-icon"></i>
+            <p class="text-muted">Aucun paiement enregistré</p>
+          </div>
+        {% endif %}
       </div>
-      {% else %}
-      <div class="text-center py-8">
-        <i class="fa-solid fa-receipt text-6xl text-muted mb-4"></i>
-        <p class="text-muted">Aucun paiement enregistré</p>
-      </div>
-      {% endif %}
     </div>
   </div>
-</div>
-{% endblock %}
+{% endblock content %}
+{% block extra_js %}
+  <script>
+  const filterPaiements = document.getElementById('filterPaiements');
+  const filterMethode = document.getElementById('filterMethode');
+  const filterStatutPaiement = document.getElementById('filterStatutPaiement');
+
+  function filterPaiementsTable() {
+    const searchTerm = filterPaiements ? filterPaiements.value.toLowerCase() : '';
+    const methodeFilter = filterMethode ? filterMethode.value : '';
+    const statutFilter = filterStatutPaiement ? filterStatutPaiement.value : '';
+    const rows = document.querySelectorAll('.paiement-row');
+
+    rows.forEach(row => {
+      const membre = row.dataset.membre;
+      const cotisation = row.dataset.cotisation;
+      const reference = row.dataset.reference;
+      const methode = row.dataset.methode;
+      const statut = row.dataset.statut;
+
+      const matchesSearch = !searchTerm ||
+        membre.includes(searchTerm) ||
+        cotisation.includes(searchTerm) ||
+        reference.includes(searchTerm);
+      const matchesMethode = !methodeFilter || methode === methodeFilter;
+      const matchesStatut = !statutFilter || statut === statutFilter;
+
+      if (matchesSearch && matchesMethode && matchesStatut) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  if (filterPaiements) {
+    filterPaiements.addEventListener('input', filterPaiementsTable);
+  }
+  if (filterMethode) {
+    filterMethode.addEventListener('change', filterPaiementsTable);
+  }
+  if (filterStatutPaiement) {
+    filterStatutPaiement.addEventListener('change', filterPaiementsTable);
+  }
+  </script>
+{% endblock extra_js %}

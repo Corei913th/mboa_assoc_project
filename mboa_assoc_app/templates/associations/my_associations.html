@@ -1,99 +1,163 @@
 {% extends 'base_with_sidebar.html' %}
-
-{% block title %}Mes Associations{% endblock %}
-
+{% block title %}
+    Mes Associations
+{% endblock title %}
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="card">
-        <div class="card-header">
-            <div class="flex-between">
-                <div>
-                    <h1 class="text-2xl font-bold">Mes Associations</h1>
-                    <p class="text-muted">Toutes les associations dont vous êtes membre</p>
+    <div class="container-fluid" style="padding: 1.25rem;">
+        <div class="card">
+            <div class="card-header">
+                <div class="flex-between">
+                    <div>
+                        <h1 class="text-2xl font-bold">Mes Associations</h1>
+                        <p class="text-muted">Toutes les associations dont vous êtes membre</p>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <input type="text"
+                               id="searchAssociations"
+                               placeholder="Rechercher..."
+                               class="form-input"
+                               style="max-width: 250px">
+                        <select id="filterType" class="form-select" style="max-width: 150px;">
+                            <option value="">Tous types</option>
+                            <option value="association">Association</option>
+                            <option value="tontine">Tontine</option>
+                            <option value="syndicat">Syndicat</option>
+                        </select>
+                        <select id="filterRoleAssoc" class="form-select" style="max-width: 150px;">
+                            <option value="">Tous rôles</option>
+                            <option value="PRESIDENT">Président</option>
+                            <option value="TRESORIER">Trésorier</option>
+                            <option value="MEMBRE">Membre</option>
+                        </select>
+                        <button type="button"
+                                onclick="openModal('creerAssociationModal')"
+                                class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i>
+                            Créer
+                        </button>
+                    </div>
                 </div>
-                <a href="{% url 'mboa_assoc_app:create_association' %}" class="btn btn-primary">
-                    <i class="fa-solid fa-plus"></i>
-                    Créer une association
-                </a>
             </div>
-        </div>
-
-        <div class="card-body">
-            {% if associations %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for adhesion in associations %}
-                <div class="card border hover:shadow-xl transition-all">
-                    {% if adhesion.association.logo %}
-                    <div class="h-32 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                        <img src="{{ adhesion.association.logo.url }}" alt="{{ adhesion.association.name }}"
-                            class="h-20 w-20 object-contain">
+            <div class="card-body">
+                {% if associations %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {% for adhesion in associations %}
+                            <div class="association-item card border hover:shadow-lg transition-all flex flex-col h-full"
+                                 data-name="{{ adhesion.association.name|lower }}"
+                                 data-type="{{ adhesion.association.type }}"
+                                 data-role="{{ adhesion.role }}">
+                                {% if adhesion.association.logo %}
+                                    <div class="h-32 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0">
+                                        <img src="{{ adhesion.association.logo.url }}"
+                                             alt="{{ adhesion.association.name }}"
+                                             class="h-20 w-20 object-contain">
+                                    </div>
+                                {% else %}
+                                    <div class="h-32 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-building text-5xl text-primary/30"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body flex flex-col flex-1">
+                                    <div class="flex-between mb-3">
+                                        <h3 class="font-bold text-lg line-clamp-1 flex-1">{{ adhesion.association.name }}</h3>
+                                        {% if adhesion.role == 'PRESIDENT' %}
+                                            <span class="badge badge-primary flex-shrink-0 ml-2">Président</span>
+                                        {% elif adhesion.role == 'TRESORIER' %}
+                                            <span class="badge badge-success flex-shrink-0 ml-2">Trésorier</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary flex-shrink-0 ml-2">Membre</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-sm text-muted mb-3">
+                                        {{ adhesion.association.get_type_display }} •
+                                        Membre depuis {{ adhesion.date|date:"d/m/Y" }}
+                                    </p>
+                                    <div class="flex-1 mb-4" style="min-height: 2.5rem;">
+                                        {% if adhesion.association.description %}
+                                            <p class="text-sm text-muted line-clamp-2">{{ adhesion.association.description }}</p>
+                                        {% else %}
+                                            <p class="text-sm text-muted italic opacity-50">Aucune description</p>
+                                        {% endif %}
+                                    </div>
+                                    {% if adhesion.association and adhesion.association.id %}
+                                        <div class="flex gap-2 mt-auto">
+                                            <a href="{% url 'mboa_assoc_app:association_dashboard' adhesion.association.id %}"
+                                               class="btn btn-primary btn-sm flex-1">
+                                                <i class="fa-solid fa-chart-line"></i>
+                                                Dashboard
+                                            </a>
+                                            <a href="{% url 'mboa_assoc_app:liste_cotisations' adhesion.association.id %}"
+                                               class="btn btn-outline btn-sm">
+                                                <i class="fa-solid fa-money-bill-wave"></i>
+                                            </a>
+                                            <a href="{% url 'mboa_assoc_app:liste_membres' adhesion.association.id %}"
+                                               class="btn btn-outline btn-sm">
+                                                <i class="fa-solid fa-users"></i>
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-error text-sm mt-auto">Association invalide</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                    {% else %}
-                    <div class="h-32 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                        <i class="fa-solid fa-building text-5xl text-primary/30"></i>
-                    </div>
-                    {% endif %}
-
-                    <div class="card-body">
-                        <div class="flex-between mb-3">
-                            <h3 class="font-bold text-lg">{{ adhesion.association.name }}</h3>
-                            {% if adhesion.role == 'PRESIDENT' %}
-                            <span class="badge badge-primary">Président</span>
-                            {% elif adhesion.role == 'TRESORIER' %}
-                            <span class="badge badge-success">Trésorier</span>
-                            {% else %}
-                            <span class="badge badge-secondary">Membre</span>
-                            {% endif %}
+                {% else %}
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-users text-6xl text-muted mb-4"></i>
+                        <h2 class="text-2xl font-bold mb-2">Aucune association</h2>
+                        <p class="text-muted mb-6">Vous n'êtes membre d'aucune association pour le moment</p>
+                        <div class="flex gap-4 justify-center">
+                            <button type="button"
+                                    onclick="openModal('creerAssociationModal')"
+                                    class="btn btn-primary">
+                                <i class="fa-solid fa-plus"></i>
+                                Créer une association
+                            </button>
+                            <a href="{% url 'mboa_assoc_app:mes_invitations' %}"
+                               class="btn btn-outline">
+                                <i class="fa-solid fa-envelope"></i>
+                                Voir mes invitations
+                            </a>
                         </div>
-
-                        <p class="text-sm text-muted mb-4">
-                            {{ adhesion.association.get_type_display }} •
-                            Membre depuis {{ adhesion.date|date:"d/m/Y" }}
-                        </p>
-
-                        {% if adhesion.association.description %}
-                        <p class="text-sm text-muted mb-4 line-clamp-2">
-                            {{ adhesion.association.description }}
-                        </p>
-                        {% endif %}
-
-                        <div class="flex gap-2">
-                            <a href="{% url 'mboa_assoc_app:association_dashboard' adhesion.association.id %}"
-                                class="btn btn-primary btn-sm flex-1">
-                                <i class="fa-solid fa-chart-line"></i>
-                                Dashboard
-                            </a>
-                            <a href="{% url 'mboa_assoc_app:liste_cotisations' adhesion.association.id %}"
-                                class="btn btn-outline btn-sm">
-                                <i class="fa-solid fa-money-bill-wave"></i>
-                            </a>
-                            <a href="{% url 'mboa_assoc_app:liste_membres' adhesion.association.id %}"
-                                class="btn btn-outline btn-sm">
-                                <i class="fa-solid fa-users"></i>
-                            </a>
-                        </div>
                     </div>
-                </div>
-                {% endfor %}
+                {% endif %}
             </div>
-            {% else %}
-            <div class="text-center py-12">
-                <i class="fa-solid fa-users text-6xl text-muted mb-4"></i>
-                <h2 class="text-2xl font-bold mb-2">Aucune association</h2>
-                <p class="text-muted mb-6">Vous n'êtes membre d'aucune association pour le moment</p>
-                <div class="flex gap-4 justify-center">
-                    <a href="{% url 'mboa_assoc_app:create_association' %}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i>
-                        Créer une association
-                    </a>
-                    <a href="{% url 'mboa_assoc_app:mes_invitations' %}" class="btn btn-outline">
-                        <i class="fa-solid fa-envelope"></i>
-                        Voir mes invitations
-                    </a>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
-</div>
-{% endblock %}
+    {% include 'modals/create_association.html' %}
+{% endblock content %}
+{% block extra_js %}
+    <script>
+const searchAssociations = document.getElementById('searchAssociations');
+const filterType = document.getElementById('filterType');
+const filterRoleAssoc = document.getElementById('filterRoleAssoc');
+
+function filterAssociations() {
+    const searchTerm = searchAssociations ? searchAssociations.value.toLowerCase() : '';
+    const typeFilter = filterType ? filterType.value : '';
+    const roleFilter = filterRoleAssoc ? filterRoleAssoc.value : '';
+    const items = document.querySelectorAll('.association-item');
+    
+    items.forEach(item => {
+        const name = item.dataset.name;
+        const type = item.dataset.type;
+        const role = item.dataset.role;
+        
+        const matchesSearch = !searchTerm || name.includes(searchTerm);
+        const matchesType = !typeFilter || type === typeFilter;
+        const matchesRole = !roleFilter || role === roleFilter;
+        
+        if (matchesSearch && matchesType && matchesRole) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+if (searchAssociations) searchAssociations.addEventListener('input', filterAssociations);
+if (filterType) filterType.addEventListener('change', filterAssociations);
+if (filterRoleAssoc) filterRoleAssoc.addEventListener('change', filterAssociations);
+    </script>
+{% endblock extra_js %}

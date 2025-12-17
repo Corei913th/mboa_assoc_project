@@ -1,190 +1,180 @@
 {% extends 'associations/base_association.html' %}
 {% load static %}
-
 {% block content %}
-<div class="container">
-    <!-- Breadcrumb -->
-    <nav style="margin-bottom: 24px;">
-        <a href="{% url 'mboa_assoc_app:association_detail' association.id %}" class="text-muted" style="text-decoration: none;">
-            ← Retour à l'association
-        </a>
-    </nav>
-    
-    <!-- En-tête -->
-    <div class="page-header">
-        <h1 class="page-title">Gestion des membres</h1>
-        <p class="text-muted">{{ association.name }} - {{ members.count }} membre{{ members.count|pluralize }}</p>
-    </div>
-    
-    <div class="grid grid-2">
-        <!-- Liste des membres actuels -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Membres actuels</h2>
-            </div>
-            <div class="card-body" style="padding: 0;">
-                <ul class="member-list">
-                    {% for member in members %}
-                    <li class="member-item">
-                        <div class="member-info">
-                            <div class="member-avatar">
-                                {{ member.user.get_full_name|slice:":1"|upper|default:member.user.username|slice:":1"|upper }}
-                            </div>
-                            <div class="member-details">
-                                <h4>{{ member.user.get_full_name|default:member.user.username }}</h4>
-                                <p>{{ member.user.email }}</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-center gap-2">
-                            {% if member.role == 'president' %}
-                                <span class="badge badge-primary">Président</span>
-                            {% elif member.role == 'treasurer' %}
-                                <span class="badge badge-success">Trésorier</span>
-                            {% else %}
-                                <span class="badge" style="background-color: var(--bg-tertiary); color: var(--text-secondary);">Membre</span>
-                            {% endif %}
-                            
-                            {% if member.role != 'president' %}
-                            <form method="post" action="{% url 'mboa_assoc_app:remove_member' association.id member.id %}" style="margin: 0;">
-                                {% csrf_token %}
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-danger btn-sm"
-                                    data-confirm="Êtes-vous sûr de vouloir retirer {{ member.user.get_full_name|default:member.user.username }} ?"
-                                >
-                                    Retirer
-                                </button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </li>
-                    {% empty %}
-                    <li style="padding: 24px; text-align: center; color: var(--text-muted);">
-                        Aucun membre pour le moment
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav style="margin-bottom: 24px;">
+            <a href="{% url 'mboa_assoc_app:association_detail' association.id %}"
+               class="text-muted"
+               style="text-decoration: none">← Retour à l'association</a>
+        </nav>
+        <!-- En-tête -->
+        <div class="page-header">
+            <h1 class="page-title">Gestion des membres</h1>
+            <p class="text-muted">{{ association.name }} - {{ members.count }} membre{{ members.count|pluralize }}</p>
         </div>
-        
-        <!-- Actions de gestion -->
-        <div>
-            <!-- Ajouter un membre -->
-            <div class="card" style="margin-bottom: 24px;">
+        <div class="grid grid-2">
+            <!-- Liste des membres actuels -->
+            <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Ajouter un membre</h2>
+                    <h2 class="card-title">Membres actuels</h2>
                 </div>
-                <div class="card-body">
-                    <!-- Recherche d'utilisateur -->
-                    <form method="get" style="margin-bottom: 16px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <input 
-                                type="text" 
-                                name="search" 
-                                id="user-search"
-                                class="form-input" 
-                                placeholder="Rechercher par nom ou email..."
-                                value="{{ request.GET.search }}"
-                            >
-                        </div>
-                    </form>
-                    
-                    <!-- Résultats de recherche -->
-                    {% if available_users %}
-                    <div id="search-results">
-                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 12px;">
-                            {{ available_users.count }} résultat{{ available_users.count|pluralize }}
-                        </p>
-                        <ul class="member-list">
-                            {% for user in available_users %}
+                <div class="card-body" style="padding: 0;">
+                    <ul class="member-list">
+                        {% for member in members %}
                             <li class="member-item">
                                 <div class="member-info">
                                     <div class="member-avatar">
-                                        {{ user.get_full_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
+                                        {{ member.membre.get_full_name|slice:":1"|upper|default:member.membre.username|slice:":1"|upper }}
                                     </div>
                                     <div class="member-details">
-                                        <h4>{{ user.get_full_name|default:user.username }}</h4>
-                                        <p>{{ user.email }}</p>
+                                        <h4>{{ member.membre.get_full_name|default:member.membre.username }}</h4>
+                                        <p>{{ member.membre.email }}</p>
                                     </div>
                                 </div>
-                                <form method="post" action="{% url 'mboa_assoc_app:add_member' association.id %}" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="user_id" value="{{ user.id }}">
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        Ajouter
-                                    </button>
-                                </form>
+                                <div class="d-flex align-center gap-2">
+                                    {% if member.role == 'PRESIDENT' %}
+                                        <span class="badge badge-primary">Président</span>
+                                    {% elif member.role == 'TRESORIER' %}
+                                        <span class="badge badge-success">Trésorier</span>
+                                    {% else %}
+                                        <span class="badge"
+                                              style="background-color: var(--bg-tertiary);
+                                                     color: var(--text-secondary)">Membre</span>
+                                    {% endif %}
+                                    {% if member.role != 'PRESIDENT' %}
+                                        <form method="post"
+                                              action="{% url 'mboa_assoc_app:remove_member' association.id member.id %}"
+                                              style="margin: 0">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    data-confirm="Êtes-vous sûr de vouloir retirer {{ member.membre.get_full_name|default:member.membre.username }} ?">
+                                                Retirer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
                             </li>
-                            {% endfor %}
-                        </ul>
+                        {% empty %}
+                            <li style="padding: 24px; text-align: center; color: var(--text-muted);">Aucun membre pour le moment</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <!-- Actions de gestion -->
+            <div>
+                <!-- Ajouter un membre -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h2 class="card-title">Ajouter un membre</h2>
                     </div>
-                    {% elif request.GET.search %}
-                    <div class="alert alert-info">
-                        Aucun utilisateur trouvé pour "{{ request.GET.search }}"
+                    <div class="card-body">
+                        <!-- Recherche d'utilisateur -->
+                        <form method="get" style="margin-bottom: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <input type="text"
+                                       name="search"
+                                       id="user-search"
+                                       class="form-input"
+                                       placeholder="Rechercher par nom ou email..."
+                                       value="{{ request.GET.search }}">
+                            </div>
+                        </form>
+                        <!-- Résultats de recherche -->
+                        {% if available_users %}
+                            <div id="search-results">
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 12px;">
+                                    {{ available_users.count }} résultat{{ available_users.count|pluralize }}
+                                </p>
+                                <ul class="member-list">
+                                    {% for user in available_users %}
+                                        <li class="member-item">
+                                            <div class="member-info">
+                                                <div class="member-avatar">{{ user.get_full_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}</div>
+                                                <div class="member-details">
+                                                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                                                    <p>{{ user.email }}</p>
+                                                </div>
+                                            </div>
+                                            <form method="post"
+                                                  action="{% url 'mboa_assoc_app:add_member' association.id %}"
+                                                  style="margin: 0">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% elif request.GET.search %}
+                            <div class="alert alert-info">Aucun utilisateur trouvé pour "{{ request.GET.search }}"</div>
+                        {% else %}
+                            <p class="text-muted" style="text-align: center; padding: 24px 0;">
+                                Utilisez la barre de recherche pour trouver un utilisateur à ajouter
+                            </p>
+                        {% endif %}
                     </div>
-                    {% else %}
-                    <p class="text-muted" style="text-align: center; padding: 24px 0;">
-                        Utilisez la barre de recherche pour trouver un utilisateur à ajouter
-                    </p>
-                    {% endif %}
                 </div>
-            </div>
-            
-            <!-- Nommer un président (président actuel uniquement) -->
-            {% if is_president %}
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="card-header">
-                    <h2 class="card-title">Nommer un nouveau président</h2>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">
-                        Vous deviendrez simple membre après cette action.
-                    </p>
-                    <form method="post" action="{% url 'mboa_assoc_app:nominate_president' association.id %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {{ nominate_president_form.new_president }}
+                <!-- Nommer un président (président actuel uniquement) -->
+                {% if adhesion.role == 'PRESIDENT' %}
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h2 class="card-title">Nommer un nouveau président</h2>
                         </div>
-                        <button 
-                            type="submit" 
-                            class="btn btn-warning btn-block"
-                            data-confirm="Êtes-vous sûr de vouloir transférer la présidence ? Vous deviendrez simple membre."
-                        >
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="8.5" cy="7" r="4"/>
-                                <path d="M20 8v6M23 11h-6"/>
-                            </svg>
-                            Nommer président
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Nommer un trésorier -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Nommer un trésorier</h2>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="{% url 'mboa_assoc_app:nominate_treasurer' association.id %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {{ nominate_treasurer_form.treasurer }}
+                        <div class="card-body">
+                            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">
+                                Vous deviendrez simple membre après cette action.
+                            </p>
+                            <form method="post"
+                                  action="{% url 'mboa_assoc_app:nominate_president' association.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">{{ nominate_president_form.new_president }}</div>
+                                <button type="submit"
+                                        class="btn btn-warning btn-block"
+                                        data-confirm="Êtes-vous sûr de vouloir transférer la présidence ? Vous deviendrez simple membre.">
+                                    <svg width="20"
+                                         height="20"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="8.5" cy="7" r="4" />
+                                        <path d="M20 8v6M23 11h-6" />
+                                    </svg>
+                                    Nommer président
+                                </button>
+                            </form>
                         </div>
-                        <button type="submit" class="btn btn-success btn-block">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="8.5" cy="7" r="4"/>
-                                <path d="M20 8v6M23 11h-6"/>
-                            </svg>
-                            Nommer trésorier
-                        </button>
-                    </form>
-                </div>
+                    </div>
+                    <!-- Nommer un trésorier -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Nommer un trésorier</h2>
+                        </div>
+                        <div class="card-body">
+                            <form method="post"
+                                  action="{% url 'mboa_assoc_app:nominate_treasurer' association.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">{{ nominate_treasurer_form.treasurer }}</div>
+                                <button type="submit" class="btn btn-success btn-block">
+                                    <svg width="20"
+                                         height="20"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="8.5" cy="7" r="4" />
+                                        <path d="M20 8v6M23 11h-6" />
+                                    </svg>
+                                    Nommer trésorier
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
 {% endblock %}

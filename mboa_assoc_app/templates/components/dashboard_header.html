@@ -1,0 +1,10 @@
+{% load static %}
+<div class="dashboard-header-global">
+  <div class="dashboard-header-content">
+    <div class="dashboard-header-left">
+      <h1 class="dashboard-header-title">{{ page_title|default:"Tableau de bord" }}</h1>
+      {% if page_subtitle %}<p class="dashboard-header-subtitle">{{ page_subtitle }}</p>{% endif %}
+    </div>
+    {% if header_actions %}<div class="dashboard-header-right">{{ header_actions|safe }}</div>{% endif %}
+  </div>
+</div>

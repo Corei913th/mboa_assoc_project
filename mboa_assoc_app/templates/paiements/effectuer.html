@@ -1,1 +1,79 @@
-<!-- Formulaire de paiement -->
+{% extends 'base_with_sidebar.html' %}
+{% load static %}
+{% block title %}
+  Effectuer un paiement
+{% endblock title %}
+{% block content %}
+  <div class="payment-container">
+    <div class="payment-card">
+      <div class="payment-header">
+        <h1 class="payment-title">Effectuer un paiement</h1>
+        <button type="button"
+                onclick="window.history.back()"
+                class="btn-close-payment">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="payment-body">
+        <div class="payment-summary">
+          <div class="payment-summary-item">
+            <span class="payment-summary-label">Cotisation:</span>
+            <span class="payment-summary-value">{{ cotisation.type_cotisation }}</span>
+          </div>
+          <div class="payment-summary-item">
+            <span class="payment-summary-label">Montant:</span>
+            <span class="payment-summary-amount">{{ cotisation.montant|floatformat:0 }} FCFA</span>
+          </div>
+        </div>
+        <form method="post" class="payment-form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label">Méthode de paiement</label>
+            <div class="payment-methods">
+              <label class="payment-method-option">
+                <input type="radio" name="methode" value="MOMO" required>
+                <div class="payment-method-card">
+                  <div class="payment-method-icon payment-method-icon-momo">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                  </div>
+                  <span class="payment-method-label">Mobile Money (MTN)</span>
+                </div>
+              </label>
+              <label class="payment-method-option">
+                <input type="radio" name="methode" value="OM" required>
+                <div class="payment-method-card">
+                  <div class="payment-method-icon payment-method-icon-om">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                  </div>
+                  <span class="payment-method-label">Orange Money</span>
+                </div>
+              </label>
+              <label class="payment-method-option">
+                <input type="radio" name="methode" value="CASH" required>
+                <div class="payment-method-card">
+                  <div class="payment-method-icon payment-method-icon-cash">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                  </div>
+                  <span class="payment-method-label">Espèces</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="alert alert-info">
+            <i class="fa-solid fa-circle-info alert-icon"></i>
+            <div class="alert-content">Le paiement sera validé automatiquement (mode démo)</div>
+          </div>
+          <div class="payment-actions">
+            <button type="button"
+                    onclick="window.history.back()"
+                    class="btn btn-secondary">Annuler</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-check"></i>
+              Confirmer le paiement
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

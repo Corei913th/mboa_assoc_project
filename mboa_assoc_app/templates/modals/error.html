@@ -1,0 +1,22 @@
+{% comment %}Modal générique d'erreur{% endcomment %}
+<div id="errorModal" class="modal-overlay hidden">
+  <div class="modal-container" onclick="event.stopPropagation()">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fa-solid fa-exclamation-circle text-error"></i>
+          Erreur
+        </h3>
+        <button type="button" class="modal-close" onclick="closeModal('errorModal')">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="errorMessage" class="text-foreground"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('errorModal')" class="btn btn-secondary">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
