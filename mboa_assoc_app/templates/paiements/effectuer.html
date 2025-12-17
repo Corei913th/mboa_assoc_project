@@ -1,1 +1,8 @@
 <!-- Formulaire de paiement -->
+ <h2>Enregistrer un paiement</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Valider le paiement</button>
+</form>

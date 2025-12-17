@@ -1,0 +1,6 @@
+<h1>Détail du paiement {{ paiement.reference }}</h1>
+<p>Membre : {{ paiement.membre.username }}</p>
+<p>Montant : {{ paiement.montant }} FCFA</p>
+<p>Statut : {{ paiement.statut }}</p>
+<p>Méthode : {{ paiement.methode }}</p>
+<a href="{% url 'mboa_assoc_app:paiement_list' %}">Retour à la liste</a>

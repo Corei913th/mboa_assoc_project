@@ -1,0 +1,11 @@
+<h1>Liste des paiements</h1>
+<a href="{% url 'mboa_assoc_app:paiement_create' %}">Nouveau paiement</a>
+<ul>
+{% for paiement in paiements %}
+    <li>
+        <a href="{% url 'mboa_assoc_app:paiement_detail' paiement.id %}">
+            {{ paiement.reference }} - {{ paiement.montant }} FCFA
+        </a>
+    </li>
+{% endfor %}
+</ul>

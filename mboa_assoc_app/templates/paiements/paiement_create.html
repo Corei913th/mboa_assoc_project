@@ -1,0 +1,7 @@
+<h1>Créer un nouveau paiement</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+</form>
+<a href="{% url 'mboa_assoc_app:paiement_list' %}">Retour à la liste</a>
