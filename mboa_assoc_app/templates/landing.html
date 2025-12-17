@@ -1,631 +1,632 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Gérez les cotisations de votre association au Cameroun en toute transparence. Fini les cahiers perdus et les comptes confus.">
-  <title>Mboa Asso - Gestion simple des cotisations au Cameroun</title>
-  <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
-  <link rel="stylesheet" href="{% static 'css/fontawesome-custom.css' %}">
-  <link rel="stylesheet" href="{% static 'css/fontawesome-icons.min.css' %}">
-</head>
-
-<body class="bg-background text-foreground antialiased">
-
-  <!-- HEADER -->
-  <header class="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-none shadow-none">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex items-center justify-between h-16">
-        <a href="{% url 'mboa_assoc_app:landing' %}" class="flex items-center gap-2 group">
-          <i
-            class="fa-solid fa-users-between-lines text-2xl text-primary group-hover:scale-110 transition-transform"></i>
-          <span class="text-xl font-bold text-foreground">Mboa Asso</span>
-        </a>
-        <div class="flex items-center gap-4">
-          <a href="#fonctionnalites"
-            class="hidden md:inline-block text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Fonctionnalités</a>
-          <a href="#tarifs"
-            class="hidden md:inline-block text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Tarifs</a>
-          <a href="{% url 'mboa_assoc_app:login' %}"
-            class="text-sm font-medium text-card-foreground hover:text-primary transition-colors">Connexion</a>
-          <a href="{% url 'mboa_assoc_app:register' %}"
-            class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 transition-all">Créer
-            un compte</a>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="relative overflow-hidden  py-20 lg:py-32">
-    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div class="animate-slide-up">
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
-            Gérez les cotisations de votre association en toute <span class="text-primary">transparence</span>
-          </h1>
-          <p class="text-lg text-muted-foreground mb-8 leading-relaxed">
-            Fini les cahiers perdus et les comptes confus. Suivez les paiements, rappelez les membres et gardez une
-            trace claire de chaque franc depuis votre téléphone.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 mb-6">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Gérez les cotisations de votre association au Cameroun en toute transparence. Fini les cahiers perdus et les comptes confus.">
+    <title>Mboa Asso - Gestion simple des cotisations au Cameroun</title>
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-icons.min.css' %}">
+  </head>
+  <body class="bg-background text-foreground antialiased">
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-none shadow-none">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="flex items-center justify-between h-16">
+          <a href="{% url 'mboa_assoc_app:landing' %}"
+             class="flex items-center gap-2 group">
+            <i class="fa-solid fa-users-between-lines text-2xl text-primary group-hover:scale-110 transition-transform"></i>
+            <span class="text-xl font-bold text-foreground">Mboa Asso</span>
+          </a>
+          <div class="flex items-center gap-4">
+            <a href="#fonctionnalites"
+               class="hidden md:inline-block text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Fonctionnalités</a>
+            <a href="#tarifs"
+               class="hidden md:inline-block text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Tarifs</a>
+            <a href="{% url 'mboa_assoc_app:login' %}"
+               class="text-sm font-medium text-card-foreground hover:text-primary transition-colors">Connexion</a>
             <a href="{% url 'mboa_assoc_app:register' %}"
-              class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 hover:shadow-2xl hover:-translate-y-1 transition-all text-center">
-              Créer mon compte gratuitement
-            </a>
-            <a href="#comment-ca-marche"
-              class="px-8 py-4 bg-card border-2 border-border text-card-foreground font-bold rounded-xl hover:border-primary hover:text-primary hover:shadow-lg transition-all text-center">
-              Voir comment ça marche
-            </a>
+               class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 transition-all">Créer
+            un compte</a>
           </div>
-          <div class="flex flex-wrap gap-6 text-sm text-muted-foreground">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Sans carte
+        </nav>
+      </div>
+    </header>
+    <!-- HERO -->
+    <section class="relative overflow-hidden  py-20 lg:py-32">
+      <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="animate-slide-up">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
+              Gérez les cotisations de votre association en toute <span class="text-primary">transparence</span>
+            </h1>
+            <p class="text-lg text-muted-foreground mb-8 leading-relaxed">
+              Fini les cahiers perdus et les comptes confus. Suivez les paiements, rappelez les membres et gardez une
+              trace claire de chaque franc depuis votre téléphone.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+              <a href="{% url 'mboa_assoc_app:register' %}"
+                 class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 hover:shadow-2xl hover:-translate-y-1 transition-all text-center">
+                Créer mon compte gratuitement
+              </a>
+              <a href="#comment-ca-marche"
+                 class="px-8 py-4 bg-card border-2 border-border text-card-foreground font-bold rounded-xl hover:border-primary hover:text-primary hover:shadow-lg transition-all text-center">
+                Voir comment ça marche
+              </a>
+            </div>
+            <div class="flex flex-wrap gap-6 text-sm text-muted-foreground">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Sans carte
               bancaire</span>
-            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> 2 minutes</span>
-            <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Gratuit pour
+              <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> 2 minutes</span>
+              <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Gratuit pour
               commencer</span>
+            </div>
+          </div>
+          <div class="relative">
+            <!-- [ZONE IMAGE HERO] -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+              <img src="../static/images/dsh_1.png"
+                   alt="Mockup mobile tableau de bord"
+                   class="w-full h-auto">
+            </div>
           </div>
         </div>
-        <div class="relative">
-          <!-- [ZONE IMAGE HERO] -->
-          <div class="relative rounded-3xl overflow-hidden shadow-2xl">
-            <img
-              src="https://placehold.co/800x600/10b981/ffffff?text=Mockup+Mobile+Dashboard%0AListe+Membres+Statuts%0APayé+✓+En+retard+⚠%0A800x600px"
-              alt="Mockup mobile tableau de bord" class="w-full h-auto">
-
+      </div>
+    </section>
+    <!-- PROBLÈMES -->
+    <section class="py-20 bg-muted">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12">Vous reconnaissez ces situations ?</h2>
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+          <div class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+            <i class="fa-solid fa-book text-5xl text-warning mb-6"></i>
+            <h3 class="text-xl font-bold text-foreground mb-3">Cahiers perdus ou illisibles</h3>
+            <p class="text-muted-foreground italic">
+              "Le trésorier a déménagé avec le cahier. Personne ne sait plus qui a
+              payé."
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+            <i class="fa-solid fa-money-bill-wave text-5xl text-error mb-6"></i>
+            <h3 class="text-xl font-bold text-foreground mb-3">Argent qui disparaît</h3>
+            <p class="text-muted-foreground italic">
+              "Les comptes ne sont jamais clairs. Chaque réunion commence par des
+              disputes."
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
+            <i class="fa-solid fa-phone-slash text-5xl text-muted-foreground mb-6"></i>
+            <h3 class="text-xl font-bold text-foreground mb-3">Rappels impossibles</h3>
+            <p class="text-muted-foreground italic">
+              "On perd du temps à appeler chaque membre. Certains oublient toujours
+              de
+              payer."
+            </p>
+          </div>
+        </div>
+        <!-- [ZONE IMAGE PROBLÈME] -->
+        <div class="relative rounded-3xl overflow-hidden">
+          <img src="../static/images/index.jpg"
+               alt="Cahier de tontine manuscrit"
+               class="w-full h-auto">
+        </div>
+      </div>
+    </section>
+    <!-- SOLUTION -->
+    <section id="comment-ca-marche" class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Tout devient simple et clair</h2>
+          <p class="text-lg text-muted-foreground">En 3 étapes, reprenez le contrôle de votre association</p>
+        </div>
+        <!-- Étape 1 -->
+        <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div>
+            <div class="text-8xl font-black text-primary/10 mb-4">1</div>
+            <h3 class="text-2xl font-bold text-foreground mb-4">Créez votre association</h3>
+            <p class="text-muted-foreground text-lg leading-relaxed">
+              Ajoutez le nom, fixez le montant des cotisations. Invitez vos membres par SMS.
+            </p>
+          </div>
+          <!-- [ZONE IMAGE ÉTAPE 1] -->
+          <div class="relative rounded-3xl overflow-hidden">
+            <img src="../static/images/asso_form.png"
+                 alt="Mockup formulaire création"
+                 class="w-full h-auto">
+          </div>
+        </div>
+        <!-- Étape 2 -->
+        <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <!-- [ZONE IMAGE ÉTAPE 2] -->
+          <div class="order-2 lg:order-1 relative rounded-3xl overflow-hidden">
+            <img src="../static/images/payment_form.png"
+                 alt="Mockup paiement confirmé"
+                 class="w-full h-auto">
+          </div>
+          <div class="order-1 lg:order-2">
+            <div class="text-8xl font-black text-success/10 mb-4">2</div>
+            <h3 class="text-2xl font-bold text-foreground mb-4">Enregistrez les paiements</h3>
+            <p class="text-muted-foreground text-lg leading-relaxed">
+              Chaque versement est noté automatiquement. Tout le monde voit qui a payé, qui est en retard.
+            </p>
+          </div>
+        </div>
+        <!-- Étape 3 -->
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="text-8xl font-black text-info/10 mb-4">3</div>
+            <h3 class="text-2xl font-bold text-foreground mb-4">Consultez l'historique</h3>
+            <p class="text-muted-foreground text-lg leading-relaxed">
+              Tous les mouvements sont gardés en sécurité. Plus besoin de fouiller dans les cahiers.
+            </p>
+          </div>
+          <!-- [ZONE IMAGE ÉTAPE 3] -->
+          <div class="relative rounded-3xl overflow-hidden">
+            <img src="../static/images/payment_hist.png"
+                 alt="Mockup historique"
+                 class="w-full h-auto">
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- PROBLÈMES -->
-  <section class="py-20 bg-muted">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12">
-        Vous reconnaissez ces situations ?
-      </h2>
-      <div class="grid md:grid-cols-3 gap-8 mb-12">
-        <div
-          class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-          <i class="fa-solid fa-book text-5xl text-warning mb-6"></i>
-          <h3 class="text-xl font-bold text-foreground mb-3">Cahiers perdus ou illisibles</h3>
-          <p class="text-muted-foreground italic">"Le trésorier a déménagé avec le cahier. Personne ne sait plus qui a
-            payé."
-          </p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-          <i class="fa-solid fa-money-bill-wave text-5xl text-error mb-6"></i>
-          <h3 class="text-xl font-bold text-foreground mb-3">Argent qui disparaît</h3>
-          <p class="text-muted-foreground italic">"Les comptes ne sont jamais clairs. Chaque réunion commence par des
-            disputes."
-          </p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border border-border">
-          <i class="fa-solid fa-phone-slash text-5xl text-muted-foreground mb-6"></i>
-          <h3 class="text-xl font-bold text-foreground mb-3">Rappels impossibles</h3>
-          <p class="text-muted-foreground italic">"On perd du temps à appeler chaque membre. Certains oublient toujours
-            de
-            payer."</p>
-        </div>
-      </div>
-      <!-- [ZONE IMAGE PROBLÈME] -->
-      <div class="relative rounded-3xl overflow-hidden">
-        <img src="../static/images/index.jpg" alt="Cahier de tontine manuscrit" class="w-full h-auto">
-      </div>
-    </div>
-  </section>
-
-  <!-- SOLUTION -->
-  <section id="comment-ca-marche" class="py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Tout devient simple et clair</h2>
-        <p class="text-lg text-muted-foreground">En 3 étapes, reprenez le contrôle de votre association</p>
-      </div>
-
-      <!-- Étape 1 -->
-      <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
-        <div>
-          <div class="text-8xl font-black text-primary/10 mb-4">1</div>
-          <h3 class="text-2xl font-bold text-foreground mb-4">Créez votre association</h3>
-          <p class="text-muted-foreground text-lg leading-relaxed">
-            Ajoutez le nom, fixez le montant des cotisations. Invitez vos membres par SMS.
-          </p>
-        </div>
-        <!-- [ZONE IMAGE ÉTAPE 1] -->
-        <div class="relative rounded-3xl overflow-hidden">
-          <img
-            src="https://placehold.co/600x600/10b981/ffffff?text=Étape+1+Création%0AFormulaire+Association%0A600x600px"
-            alt="Mockup formulaire création" class="w-full h-auto">
-        </div>
-      </div>
-
-      <!-- Étape 2 -->
-      <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
-        <!-- [ZONE IMAGE ÉTAPE 2] -->
-        <div class="order-2 lg:order-1 relative rounded-3xl overflow-hidden">
-          <img src="https://placehold.co/600x600/22c55e/ffffff?text=Étape+2+Paiement%0AConfirmé+✓%0A600x600px"
-            alt="Mockup paiement confirmé" class="w-full h-auto">
-        </div>
-        <div class="order-1 lg:order-2">
-          <div class="text-8xl font-black text-success/10 mb-4">2</div>
-          <h3 class="text-2xl font-bold text-foreground mb-4">Enregistrez les paiements</h3>
-          <p class="text-muted-foreground text-lg leading-relaxed">
-            Chaque versement est noté automatiquement. Tout le monde voit qui a payé, qui est en retard.
-          </p>
-        </div>
-      </div>
-
-      <!-- Étape 3 -->
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <div class="text-8xl font-black text-info/10 mb-4">3</div>
-          <h3 class="text-2xl font-bold text-foreground mb-4">Consultez l'historique</h3>
-          <p class="text-muted-foreground text-lg leading-relaxed">
-            Tous les mouvements sont gardés en sécurité. Plus besoin de fouiller dans les cahiers.
-          </p>
-        </div>
-        <!-- [ZONE IMAGE ÉTAPE 3] -->
-        <div class="relative rounded-3xl overflow-hidden">
-          <img src="https://placehold.co/600x600/3b82f6/ffffff?text=Étape+3+Historique%0ATransactions%0A600x600px"
-            alt="Mockup historique" class="w-full h-auto">
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BÉNÉFICES -->
-  <section class="py-20 bg-muted">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Chacun y gagne</h2>
-      <div class="grid lg:grid-cols-2 gap-12 mb-12">
-        <!-- Membres -->
-        <div>
-          <h3 class="text-2xl font-bold text-foreground mb-8">Pour les membres</h3>
-          <div class="space-y-6">
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
-              <i class="fa-solid fa-circle-check text-2xl text-success flex-shrink-0"></i>
-              <div>
-                <h4 class="font-bold text-foreground mb-1">Vous savez toujours où vous en êtes</h4>
-                <p class="text-muted-foreground text-sm">Plus besoin de demander : vous voyez votre statut en temps
-                  réel.</p>
+    </section>
+    <!-- BÉNÉFICES -->
+    <section class="py-20 bg-muted">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Chacun y gagne</h2>
+        <div class="grid lg:grid-cols-2 gap-12 mb-12">
+          <!-- Membres -->
+          <div>
+            <h3 class="text-2xl font-bold text-foreground mb-8">Pour les membres</h3>
+            <div class="space-y-6">
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
+                <i class="fa-solid fa-circle-check text-2xl text-success flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Vous savez toujours où vous en êtes</h4>
+                  <p class="text-muted-foreground text-sm">
+                    Plus besoin de demander : vous voyez votre statut en temps
+                    réel.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
+                <i class="fa-solid fa-bell text-2xl text-info flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Rappels automatiques</h4>
+                  <p class="text-muted-foreground text-sm">
+                    Un SMS vous prévient avant l'échéance. Vous ne payez plus de
+                    pénalités.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
+                <i class="fa-solid fa-chart-line text-2xl text-primary flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Transparence totale</h4>
+                  <p class="text-muted-foreground text-sm">Vous voyez les comptes de l'association. Tout est clair.</p>
+                </div>
               </div>
             </div>
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
-              <i class="fa-solid fa-bell text-2xl text-info flex-shrink-0"></i>
+          </div>
+          <!-- Responsables -->
+          <div>
+            <h3 class="text-2xl font-bold text-foreground mb-8">Pour les responsables</h3>
+            <div class="space-y-6">
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
+                <i class="fa-solid fa-clock text-2xl text-warning flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Moins de temps perdu</h4>
+                  <p class="text-muted-foreground text-sm">Plus besoin de rappeler chaque membre manuellement.</p>
+                </div>
+              </div>
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
+                <i class="fa-solid fa-briefcase text-2xl text-primary flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Crédibilité renforcée</h4>
+                  <p class="text-muted-foreground text-sm">
+                    Les comptes sont vérifiables par tous. Vous évitez les
+                    soupçons.
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
+                <i class="fa-solid fa-chart-pie text-2xl text-success flex-shrink-0"></i>
+                <div>
+                  <h4 class="font-bold text-foreground mb-1">Suivi en un coup d'œil</h4>
+                  <p class="text-muted-foreground text-sm">Qui a payé, qui est en retard : tout est visible sur un écran.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- [ZONE IMAGE BÉNÉFICES] -->
+        <div class="relative rounded-3xl overflow-hidden">
+          <img src="https://placehold.co/1400x600/10b981/ffffff?text=Illustration+Bénéfices%0AMembre+Trésorier%0A1400x600px"
+               alt="Illustration bénéfices"
+               class="w-full h-auto">
+        </div>
+      </div>
+    </section>
+    <!-- CONFIANCE -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Votre argent, votre confiance</h2>
+          <p class="text-lg text-muted-foreground">Nous comprenons vos inquiétudes. Voici nos engagements.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
+            <i class="fa-solid fa-shield-halved text-6xl text-success mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-3">Sécurité maximale</h3>
+            <p class="text-sm text-muted-foreground">
+              Vos données sont cryptées et sauvegardées. Personne d'autre que votre
+              association n'y a accès.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
+            <i class="fa-solid fa-flag text-6xl text-success mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-3">Conçu au Cameroun</h3>
+            <p class="text-sm text-muted-foreground">
+              Nous connaissons les tontines, les coopératives, les associations.
+              Cette
+              solution est faite pour vous.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
+            <i class="fa-solid fa-hand-holding-dollar text-6xl text-primary mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-3">Nous ne touchons pas à votre argent</h3>
+            <p class="text-sm text-muted-foreground">
+              La plateforme enregistre seulement les paiements. L'argent reste
+              entre vos
+              mains.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
+            <i class="fa-solid fa-signal text-6xl text-info mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-3">Fonctionne même avec connexion faible</h3>
+            <p class="text-sm text-muted-foreground">
+              Pensé pour les zones avec réseau instable. Tout est sauvegardé
+              automatiquement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- CAS D'USAGE -->
+    <section class="py-20 bg-muted">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Ils utilisent déjà la plateforme</h2>
+        <div class="space-y-8">
+          <!-- Cas 1 -->
+          <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
+            <div class="flex items-start gap-6 mb-6">
+              <i class="fa-solid fa-building-columns text-5xl text-primary flex-shrink-0"></i>
               <div>
-                <h4 class="font-bold text-foreground mb-1">Rappels automatiques</h4>
-                <p class="text-muted-foreground text-sm">Un SMS vous prévient avant l'échéance. Vous ne payez plus de
-                  pénalités.
+                <h3 class="text-xl font-bold text-foreground mb-2">Tontine Akwa Nord - Douala</h3>
+                <p class="text-sm text-muted-foreground flex items-center gap-4">
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 35 membres</span>
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisation mensuelle</span>
                 </p>
               </div>
             </div>
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-primary">
-              <i class="fa-solid fa-chart-line text-2xl text-primary flex-shrink-0"></i>
-              <div>
-                <h4 class="font-bold text-foreground mb-1">Transparence totale</h4>
-                <p class="text-muted-foreground text-sm">Vous voyez les comptes de l'association. Tout est clair.</p>
-              </div>
+            <p class="text-muted-foreground italic border-l-4 border-primary pl-4 mb-4">
+              "Avant, on perdait 2 heures à chaque réunion pour vérifier qui avait payé. Maintenant, tout est clair avant
+              même qu'on se retrouve."
+            </p>
+            <p class="text-sm font-semibold text-foreground">— Marie T., Trésorière</p>
+            <!-- [ZONE IMAGE CAS 1] -->
+            <div class="relative mt-6 rounded-2xl overflow-hidden">
+              <img src="../static/images/Femme-tontine.jpg"
+                   alt="Photo tontine Douala"
+                   class="w-full h-auto">
             </div>
           </div>
-        </div>
-        <!-- Responsables -->
-        <div>
-          <h3 class="text-2xl font-bold text-foreground mb-8">Pour les responsables</h3>
-          <div class="space-y-6">
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
-              <i class="fa-solid fa-clock text-2xl text-warning flex-shrink-0"></i>
+          <!-- Cas 2 -->
+          <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
+            <div class="flex items-start gap-6 mb-6">
+              <i class="fa-solid fa-seedling text-5xl text-success flex-shrink-0"></i>
               <div>
-                <h4 class="font-bold text-foreground mb-1">Moins de temps perdu</h4>
-                <p class="text-muted-foreground text-sm">Plus besoin de rappeler chaque membre manuellement.</p>
-              </div>
-            </div>
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
-              <i class="fa-solid fa-briefcase text-2xl text-primary flex-shrink-0"></i>
-              <div>
-                <h4 class="font-bold text-foreground mb-1">Crédibilité renforcée</h4>
-                <p class="text-muted-foreground text-sm">Les comptes sont vérifiables par tous. Vous évitez les
-                  soupçons.</p>
-              </div>
-            </div>
-            <div
-              class="flex gap-4 p-4 rounded-xl hover:bg-card hover:shadow-lg transition-all border-l-4 border-transparent hover:border-secondary">
-              <i class="fa-solid fa-chart-pie text-2xl text-success flex-shrink-0"></i>
-              <div>
-                <h4 class="font-bold text-foreground mb-1">Suivi en un coup d'œil</h4>
-                <p class="text-muted-foreground text-sm">Qui a payé, qui est en retard : tout est visible sur un écran.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- [ZONE IMAGE BÉNÉFICES] -->
-      <div class="relative rounded-3xl overflow-hidden">
-        <img
-          src="https://placehold.co/1400x600/10b981/ffffff?text=Illustration+Bénéfices%0AMembre+Trésorier%0A1400x600px"
-          alt="Illustration bénéfices" class="w-full h-auto">
-
-      </div>
-    </div>
-  </section>
-
-  <!-- CONFIANCE -->
-  <section class="py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Votre argent, votre confiance</h2>
-        <p class="text-lg text-muted-foreground">Nous comprenons vos inquiétudes. Voici nos engagements.</p>
-      </div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div
-          class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
-          <i class="fa-solid fa-shield-halved text-6xl text-success mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-3">Sécurité maximale</h3>
-          <p class="text-sm text-muted-foreground">Vos données sont cryptées et sauvegardées. Personne d'autre que votre
-            association n'y a accès.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
-          <i class="fa-solid fa-flag text-6xl text-success mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-3">Conçu au Cameroun</h3>
-          <p class="text-sm text-muted-foreground">Nous connaissons les tontines, les coopératives, les associations.
-            Cette
-            solution est faite pour vous.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
-          <i class="fa-solid fa-hand-holding-dollar text-6xl text-primary mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-3">Nous ne touchons pas à votre argent</h3>
-          <p class="text-sm text-muted-foreground">La plateforme enregistre seulement les paiements. L'argent reste
-            entre vos
-            mains.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all border-2 border-transparent hover:border-primary">
-          <i class="fa-solid fa-signal text-6xl text-info mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-3">Fonctionne même avec connexion faible</h3>
-          <p class="text-sm text-muted-foreground">Pensé pour les zones avec réseau instable. Tout est sauvegardé
-            automatiquement.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CAS D'USAGE -->
-  <section class="py-20 bg-muted">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Ils utilisent déjà la plateforme</h2>
-      <div class="space-y-8">
-        <!-- Cas 1 -->
-        <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
-          <div class="flex items-start gap-6 mb-6">
-            <i class="fa-solid fa-building-columns text-5xl text-primary flex-shrink-0"></i>
-            <div>
-              <h3 class="text-xl font-bold text-foreground mb-2">Tontine Akwa Nord - Douala</h3>
-              <p class="text-sm text-muted-foreground flex items-center gap-4">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 35 membres</span>
-                <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisation mensuelle</span>
-              </p>
-            </div>
-          </div>
-          <p class="text-muted-foreground italic border-l-4 border-primary pl-4 mb-4">
-            "Avant, on perdait 2 heures à chaque réunion pour vérifier qui avait payé. Maintenant, tout est clair avant
-            même qu'on se retrouve."
-          </p>
-          <p class="text-sm font-semibold text-foreground">— Marie T., Trésorière</p>
-          <!-- [ZONE IMAGE CAS 1] -->
-          <div class="relative mt-6 rounded-2xl overflow-hidden">
-            <img src="../static/images/Femme-tontine.jpg" alt="Photo tontine Douala" class="w-full h-auto">
-
-          </div>
-        </div>
-
-        <!-- Cas 2 -->
-        <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
-          <div class="flex items-start gap-6 mb-6">
-            <i class="fa-solid fa-seedling text-5xl text-success flex-shrink-0"></i>
-            <div>
-              <h3 class="text-xl font-bold text-foreground mb-2">Coopérative des Planteurs de Café - Bafoussam</h3>
-              <p class="text-sm text-muted-foreground flex items-center gap-4">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 80 membres</span>
-                <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisation
+                <h3 class="text-xl font-bold text-foreground mb-2">Coopérative des Planteurs de Café - Bafoussam</h3>
+                <p class="text-sm text-muted-foreground flex items-center gap-4">
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 80 membres</span>
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisation
                   trimestrielle</span>
+                </p>
+              </div>
+            </div>
+            <p class="text-muted-foreground italic border-l-4 border-green-600 pl-4 mb-4">
+              "On gère 80 membres dans 5 villages différents. Avant c'était le chaos. Aujourd'hui, même ceux qui habitent
+              loin savent exactement où ils en sont."
+            </p>
+            <p class="text-sm font-semibold text-foreground">— Paul K., Président</p>
+            <!-- [ZONE IMAGE CAS 2] -->
+            <div class="relative mt-6 rounded-2xl overflow-hidden">
+              <img src="../static/images/travailleurs-campagne-terrain_23-2148761770.jpg"
+                   alt="Photo coopérative Bafoussam"
+                   class="w-full h-auto">
+            </div>
+          </div>
+          <!-- Cas 3 -->
+          <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
+            <div class="flex items-start gap-6 mb-6">
+              <i class="fa-solid fa-people-roof text-5xl text-info flex-shrink-0"></i>
+              <div>
+                <h3 class="text-xl font-bold text-foreground mb-2">Amicale du Quartier Omnisport - Yaoundé</h3>
+                <p class="text-sm text-muted-foreground flex items-center gap-4">
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 22 membres</span>
+                  <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisations variables</span>
+                </p>
+              </div>
+            </div>
+            <p class="text-muted-foreground italic border-l-4 border-blue-500 pl-4 mb-4">
+              "Pour nos projets communs, on doit tous contribuer. Grâce à l'app, chacun voit l'état de la caisse. Plus de
+              disputes."
+            </p>
+            <p class="text-sm font-semibold text-foreground">— Jeanne M., Secrétaire</p>
+            <!-- [ZONE IMAGE CAS 3] -->
+            <div class="relative mt-6 rounded-2xl overflow-hidden">
+              <img src="https://placehold.co/800x450/3b82f6/ffffff?text=Amicale+Yaoundé%0ARéunion+Quartier%0A800x450px"
+                   alt="Photo amicale Yaoundé"
+                   class="w-full h-auto">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- FONCTIONNALITÉS -->
+    <section id="fonctionnalites" class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Tout ce dont vous avez besoin</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-mobile-screen-button text-6xl text-primary mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Sur votre téléphone</h3>
+            <p class="text-sm text-muted-foreground">Accessible partout, tout le temps</p>
+          </div>
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-users text-6xl text-primary mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Gestion des membres</h3>
+            <p class="text-sm text-muted-foreground">Ajoutez, retirez, consultez</p>
+          </div>
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-money-bill-transfer text-6xl text-success mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Suivi des paiements</h3>
+            <p class="text-sm text-muted-foreground">Qui a payé, qui doit payer</p>
+          </div>
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-bell text-6xl text-warning mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Rappels automatiques</h3>
+            <p class="text-sm text-muted-foreground">Par SMS, avant chaque échéance</p>
+          </div>
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-chart-bar text-6xl text-info mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Rapports clairs</h3>
+            <p class="text-sm text-muted-foreground">Historique complet et exportable</p>
+          </div>
+          <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
+            <i class="fa-solid fa-shield-halved text-6xl text-success mb-6"></i>
+            <h3 class="text-lg font-bold text-foreground mb-2">Données sécurisées</h3>
+            <p class="text-sm text-muted-foreground">Cryptées et sauvegardées</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- TARIFS -->
+    <section id="tarifs" class="py-20 bg-muted">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Commencez gratuitement</h2>
+          <p class="text-lg text-muted-foreground">Pas de frais cachés. Pas de carte bancaire demandée.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
+          <!-- Plan Gratuit -->
+          <div class="relative bg-card rounded-3xl p-8 shadow-2xl border-4 border-primary hover:scale-105 transition-transform">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-2 rounded-full text-sm font-bold">
+              Recommandé
+            </div>
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold text-foreground mb-2">Gratuit pour toujours</h3>
+              <p class="text-muted-foreground">Pour petites associations</p>
+            </div>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Jusqu'à 20 membres
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Toutes les
+                fonctionnalités de base
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Suivi des paiements
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Rappels SMS (limités)
+              </li>
+            </ul>
+            <a href="{% url 'mboa_assoc_app:register' %}"
+               class="block w-full py-4 bg-primary text-white font-bold rounded-xl text-center hover:bg-primary/90 hover:shadow-xl transition-all">
+              Créer mon compte
+            </a>
+          </div>
+          <!-- Plan Pro -->
+          <div class="bg-card rounded-3xl p-8 shadow-xl border border-border hover:shadow-2xl hover:scale-105 transition-all">
+            <div class="text-center mb-8">
+              <h3 class="text-2xl font-bold text-foreground mb-2">Pour les grandes associations</h3>
+              <p class="text-muted-foreground">Fonctionnalités avancées</p>
+            </div>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Membres illimités
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Rappels SMS illimités
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Support prioritaire
+              </li>
+              <li class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-success"></i> Rapports avancés
+              </li>
+            </ul>
+            <a href="{% url 'mboa_assoc_app:register' %}"
+               class="block w-full py-4 bg-card border-2 border-border text-card-foreground font-bold rounded-xl text-center hover:border-primary hover:text-primary hover:shadow-lg transition-all">
+              Nous contacter
+            </a>
+          </div>
+        </div>
+        <p class="text-center text-sm text-muted-foreground flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lightbulb text-warning"></i>
+          Vous pouvez changer ou annuler à tout moment. Pas d'engagement.
+        </p>
+      </div>
+    </section>
+    <!-- FAQ -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Questions fréquentes</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Est-ce vraiment sécurisé ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Oui. Vos données sont cryptées et personne d'autre que votre
+              association ne
+              peut y accéder. Nous ne touchons jamais à votre argent.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Faut-il une bonne connexion ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Non. L'application fonctionne même avec une connexion faible. Tout
+              est
+              sauvegardé automatiquement dès que le réseau revient.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Est-ce compliqué ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Non. Si vous savez utiliser WhatsApp, vous savez utiliser cette
+              plateforme.
+              Tout est en français simple.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Plusieurs associations ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Oui. Vous pouvez être membre de plusieurs associations et gérer tout
+              depuis
+              un seul compte.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Si je perds mon téléphone ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Rien de grave. Vos données sont sauvegardées en ligne. Connectez-vous
+              depuis
+              un autre téléphone et tout sera là.
+            </p>
+          </div>
+          <div class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
+            <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-primary"></i>
+              Comment inviter les membres ?
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              Vous envoyez une invitation par SMS directement depuis l'application.
+              Ils
+              reçoivent un lien pour s'inscrire.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- CTA FINAL -->
+    <section class="relative py-20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 overflow-hidden">
+      <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+        <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+          Prêt à simplifier la gestion de votre association ?
+        </h2>
+        <p class="text-lg text-muted-foreground mb-8">
+          Rejoignez les centaines d'associations camerounaises qui ont repris le contrôle de leurs cotisations.
+        </p>
+        <a href="{% url 'mboa_assoc_app:register' %}"
+           class="inline-block px-12 py-5 bg-primary text-white text-lg font-bold rounded-2xl hover:bg-primary/90 hover:shadow-2xl hover:-translate-y-1 transition-all mb-6">
+          Créer mon compte - C'est gratuit
+        </a>
+        <div class="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground mb-6">
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Sans carte bancaire</span>
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> 2 minutes</span>
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Annulation libre</span>
+        </div>
+        <p class="text-sm text-muted-foreground">
+          Vous avez des questions ? <a href="#" class="text-primary font-semibold hover:underline"><i class="fa-solid fa-envelope"></i> Contactez-nous</a>
+        </p>
+        <!-- [ZONE IMAGE CTA FINAL] -->
+        <div class="relative mt-12 rounded-3xl overflow-hidden">
+          <img src="../static/images/femmes-qui-surmontent-adversite_960396-111323.jpg"
+               alt="Illustration groupe camerounais"
+               class="w-full h-auto">
+        </div>
+      </div>
+    </section>
+    <!-- FOOTER -->
+    <footer class="bg-foreground text-gray-300 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-2 mb-4">
+              <i class="fa-solid fa-users-between-lines text-2xl text-primary"></i>
+              <span class="text-xl font-bold text-white">Mboa Association</span>
+            </div>
+            <p class="text-sm text-muted-foreground max-w-md">
+              Gestion simple et transparente des cotisations pour les associations camerounaises.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Produit</h4>
+            <div class="space-y-2">
+              <a href="#fonctionnalites"
+                 class="block text-sm hover:text-primary transition-colors">Fonctionnalités</a>
+              <a href="#tarifs"
+                 class="block text-sm hover:text-primary transition-colors">Tarifs</a>
+              <a href="#" class="block text-sm hover:text-primary transition-colors">Nous contacter</a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Contact</h4>
+            <div class="space-y-2 text-sm">
+              <p class="flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-primary"></i>
+                contact@mboa-asso.cm
+              </p>
+              <p class="flex items-center gap-2">
+                <i class="fa-solid fa-phone text-primary"></i> +237 683 79 37 77
               </p>
             </div>
           </div>
-          <p class="text-muted-foreground italic border-l-4 border-green-600 pl-4 mb-4">
-            "On gère 80 membres dans 5 villages différents. Avant c'était le chaos. Aujourd'hui, même ceux qui habitent
-            loin savent exactement où ils en sont."
-          </p>
-          <p class="text-sm font-semibold text-foreground">— Paul K., Président</p>
-          <!-- [ZONE IMAGE CAS 2] -->
-          <div class="relative mt-6 rounded-2xl overflow-hidden">
-            <img src="../static/images/travailleurs-campagne-terrain_23-2148761770.jpg"
-              alt="Photo coopérative Bafoussam" class="w-full h-auto">
-
-          </div>
         </div>
-
-        <!-- Cas 3 -->
-        <div class="bg-card rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all border border-border">
-          <div class="flex items-start gap-6 mb-6">
-            <i class="fa-solid fa-people-roof text-5xl text-info flex-shrink-0"></i>
-            <div>
-              <h3 class="text-xl font-bold text-foreground mb-2">Amicale du Quartier Omnisport - Yaoundé</h3>
-              <p class="text-sm text-muted-foreground flex items-center gap-4">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> 22 membres</span>
-                <span class="flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Cotisations variables</span>
-              </p>
-            </div>
-          </div>
-          <p class="text-muted-foreground italic border-l-4 border-blue-500 pl-4 mb-4">
-            "Pour nos projets communs, on doit tous contribuer. Grâce à l'app, chacun voit l'état de la caisse. Plus de
-            disputes."
-          </p>
-          <p class="text-sm font-semibold text-foreground">— Jeanne M., Secrétaire</p>
-          <!-- [ZONE IMAGE CAS 3] -->
-          <div class="relative mt-6 rounded-2xl overflow-hidden">
-            <img src="https://placehold.co/800x450/3b82f6/ffffff?text=Amicale+Yaoundé%0ARéunion+Quartier%0A800x450px"
-              alt="Photo amicale Yaoundé" class="w-full h-auto">
-
-          </div>
+        <div class="border-t border-gray-800 pt-8 text-center text-sm text-muted-foreground">
+          <p>&copy; 2024 Mboa Asso. Tous droits réservés.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- FONCTIONNALITÉS -->
-  <section id="fonctionnalites" class="py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Tout ce dont vous avez besoin</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-mobile-screen-button text-6xl text-primary mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Sur votre téléphone</h3>
-          <p class="text-sm text-muted-foreground">Accessible partout, tout le temps</p>
-        </div>
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-users text-6xl text-primary mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Gestion des membres</h3>
-          <p class="text-sm text-muted-foreground">Ajoutez, retirez, consultez</p>
-        </div>
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-money-bill-transfer text-6xl text-success mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Suivi des paiements</h3>
-          <p class="text-sm text-muted-foreground">Qui a payé, qui doit payer</p>
-        </div>
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-bell text-6xl text-warning mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Rappels automatiques</h3>
-          <p class="text-sm text-muted-foreground">Par SMS, avant chaque échéance</p>
-        </div>
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-chart-bar text-6xl text-info mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Rapports clairs</h3>
-          <p class="text-sm text-muted-foreground">Historique complet et exportable</p>
-        </div>
-        <div class="text-center p-8 rounded-2xl hover:bg-primary/5 hover:shadow-xl hover:-translate-y-2 transition-all">
-          <i class="fa-solid fa-shield-halved text-6xl text-success mb-6"></i>
-          <h3 class="text-lg font-bold text-foreground mb-2">Données sécurisées</h3>
-          <p class="text-sm text-muted-foreground">Cryptées et sauvegardées</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TARIFS -->
-  <section id="tarifs" class="py-20 bg-muted">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Commencez gratuitement</h2>
-        <p class="text-lg text-muted-foreground">Pas de frais cachés. Pas de carte bancaire demandée.</p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
-        <!-- Plan Gratuit -->
-        <div
-          class="relative bg-card rounded-3xl p-8 shadow-2xl border-4 border-primary hover:scale-105 transition-transform">
-          <div
-            class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-2 rounded-full text-sm font-bold">
-            Recommandé
-          </div>
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-foreground mb-2">Gratuit pour toujours</h3>
-            <p class="text-muted-foreground">Pour petites associations</p>
-          </div>
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Jusqu'à 20 membres</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Toutes les
-              fonctionnalités de base</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Suivi des paiements
-            </li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Rappels SMS (limités)
-            </li>
-          </ul>
-          <a href="{% url 'mboa_assoc_app:register' %}"
-            class="block w-full py-4 bg-primary text-white font-bold rounded-xl text-center hover:bg-primary/90 hover:shadow-xl transition-all">
-            Créer mon compte
-          </a>
-        </div>
-
-        <!-- Plan Pro -->
-        <div
-          class="bg-card rounded-3xl p-8 shadow-xl border border-border hover:shadow-2xl hover:scale-105 transition-all">
-          <div class="text-center mb-8">
-            <h3 class="text-2xl font-bold text-foreground mb-2">Pour les grandes associations</h3>
-            <p class="text-muted-foreground">Fonctionnalités avancées</p>
-          </div>
-          <ul class="space-y-4 mb-8">
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Membres illimités</li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Rappels SMS illimités
-            </li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Support prioritaire
-            </li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-success"></i> Rapports avancés</li>
-          </ul>
-          <a href="{% url 'mboa_assoc_app:register' %}"
-            class="block w-full py-4 bg-card border-2 border-border text-card-foreground font-bold rounded-xl text-center hover:border-primary hover:text-primary hover:shadow-lg transition-all">
-            Nous contacter
-          </a>
-        </div>
-      </div>
-      <p class="text-center text-sm text-muted-foreground flex items-center justify-center gap-2">
-        <i class="fa-solid fa-lightbulb text-warning"></i>
-        Vous pouvez changer ou annuler à tout moment. Pas d'engagement.
-      </p>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center text-foreground mb-16">Questions fréquentes</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Est-ce vraiment sécurisé ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Oui. Vos données sont cryptées et personne d'autre que votre
-            association ne
-            peut y accéder. Nous ne touchons jamais à votre argent.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Faut-il une bonne connexion ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Non. L'application fonctionne même avec une connexion faible. Tout
-            est
-            sauvegardé automatiquement dès que le réseau revient.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Est-ce compliqué ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Non. Si vous savez utiliser WhatsApp, vous savez utiliser cette
-            plateforme.
-            Tout est en français simple.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Plusieurs associations ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Oui. Vous pouvez être membre de plusieurs associations et gérer tout
-            depuis
-            un seul compte.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Si je perds mon téléphone ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Rien de grave. Vos données sont sauvegardées en ligne. Connectez-vous
-            depuis
-            un autre téléphone et tout sera là.</p>
-        </div>
-        <div
-          class="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all border border-border">
-          <h3 class="font-bold text-foreground mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-circle-question text-primary"></i>
-            Comment inviter les membres ?
-          </h3>
-          <p class="text-sm text-muted-foreground">Vous envoyez une invitation par SMS directement depuis l'application.
-            Ils
-            reçoivent un lien pour s'inscrire.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA FINAL -->
-  <section class="relative py-20 bg-gradient-to-br from-primary/10 via-white to-secondary/10 overflow-hidden">
-    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-      <h2 class="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-        Prêt à simplifier la gestion de votre association ?
-      </h2>
-      <p class="text-lg text-muted-foreground mb-8">
-        Rejoignez les centaines d'associations camerounaises qui ont repris le contrôle de leurs cotisations.
-      </p>
-      <a href="{% url 'mboa_assoc_app:register' %}"
-        class="inline-block px-12 py-5 bg-primary text-white text-lg font-bold rounded-2xl hover:bg-primary/90 hover:shadow-2xl hover:-translate-y-1 transition-all mb-6">
-        Créer mon compte - C'est gratuit
-      </a>
-      <div class="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground mb-6">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Sans carte bancaire</span>
-        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> 2 minutes</span>
-        <span class="flex items-center gap-2"><i class="fa-solid fa-check text-primary"></i> Annulation libre</span>
-      </div>
-      <p class="text-sm text-muted-foreground">
-        Vous avez des questions ? <a href="#" class="text-primary font-semibold hover:underline"><i
-            class="fa-solid fa-envelope"></i> Contactez-nous</a>
-      </p>
-      <!-- [ZONE IMAGE CTA FINAL] -->
-      <div class="relative mt-12 rounded-3xl overflow-hidden">
-        <img src="../static/images/femmes-qui-surmontent-adversite_960396-111323.jpg"
-          alt="Illustration groupe camerounais" class="w-full h-auto">
-
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="bg-foreground text-gray-300 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-4 gap-8 mb-8">
-        <div class="md:col-span-2">
-          <div class="flex items-center gap-2 mb-4">
-            <i class="fa-solid fa-users-between-lines text-2xl text-primary"></i>
-            <span class="text-xl font-bold text-white">Mboa Association</span>
-          </div>
-          <p class="text-sm text-muted-foreground max-w-md">
-            Gestion simple et transparente des cotisations pour les associations camerounaises.
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Produit</h4>
-          <div class="space-y-2">
-            <a href="#fonctionnalites" class="block text-sm hover:text-primary transition-colors">Fonctionnalités</a>
-            <a href="#tarifs" class="block text-sm hover:text-primary transition-colors">Tarifs</a>
-            <a href="#" class="block text-sm hover:text-primary transition-colors">Nous contacter</a>
-          </div>
-        </div>
-        <div>
-          <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Contact</h4>
-          <div class="space-y-2 text-sm">
-            <p class="flex items-center gap-2"><i class="fa-solid fa-envelope text-primary"></i>
-              contact@mboa-asso.cm</p>
-            <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-primary"></i> +237 683 79 37 77</p>
-          </div>
-        </div>
-      </div>
-      <div class="border-t border-gray-800 pt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; 2024 Mboa Asso. Tous droits réservés.</p>
-      </div>
-    </div>
-  </footer>
-
-</body>
-
+    </footer>
+  </body>
 </html>
