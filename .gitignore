@@ -65,6 +65,8 @@ pnpm-lock.yaml
 # ============================================
 # Documentation Markdown (à exclure)
 # ============================================
+ANALYSE_COMPLETE_PROBLEMES.md
+ROUTES_GUIDE.md
 AJOUT_MOT_DE_PASSE.md
 AMELIORATIONS_OTP.md
 BUGFIX_URLS.md
